@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wybory Parlamentarne</title>
+    <title>Wybory Parlamentarne - Symulacja</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f9fafb;
             color: #111827;
             margin: 0;
-            padding: 40px;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
         
         .container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 12px;
@@ -61,38 +62,40 @@
             color: #374151;
             font-size: 14px;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .btn-scenario.active { background: #1d4ed8; color: #ffffff; border-color: #1d4ed8; }
         .btn-scenario:hover:not(.active) { background: #e5e7eb; }
 
+        .btn-logo { height: 27px; width: auto; border-radius: 2px; }
+        .plus-sign { color: #9ca3af; font-weight: bold; font-size: 16px; }
+        .btn-scenario.active .plus-sign { color: #93c5fd; }
+
+        /* --- DASHBOARD: 3 KOLUMNY --- */
         .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 idealnie równe kolumny */
+            gap: 30px; /* Lekko mniejszy odstęp, żeby grafiki były większe */
+            align-items: start;
+        }
+
+        .dashboard-col {
             display: flex;
-            gap: 60px;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .chart-section {
-            flex: 0 0 40%;
-            min-width: 450px;
-            position: relative;
+        .dashboard-col h2 {
+            margin-top: 0;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #111827;
             text-align: center;
         }
-        
-        .chart-section h2 { margin-top: 0; font-size: 20px; margin-bottom: 30px; text-align: left;}
-        
-        .seat-total {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
-        
-        .seat-total span { display: block; font-size: 14px; color: #6b7280; }
-        .seat-total strong { display: block; font-size: 40px; font-weight: 800; color: #111827; margin-top: 4px; }
-
-        .table-section { flex: 1; }
+        /* --------------------------- */
 
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px 8px; color: #4b5563; font-weight: 600; font-size: 13px; border-bottom: 2px solid #e5e7eb; }
@@ -107,7 +110,7 @@
         .row-disabled { color: #9ca3af; }
 
         .progress-wrapper { display: flex; align-items: center; justify-content: flex-end; gap: 15px; }
-        .progress-track { width: 120px; height: 10px; background-color: #e5e7eb; border-radius: 5px; overflow: hidden; }
+        .progress-track { width: 100px; height: 10px; background-color: #e5e7eb; border-radius: 5px; overflow: hidden; }
         .progress-fill { height: 100%; border-radius: 5px; }
 
         .party-group { cursor: pointer; transition: opacity 0.2s; }
@@ -118,10 +121,7 @@
             font-size: 14px; font-weight: 600; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         
-        /* Baretki Większości z dymkami */
-        .badges-container {
-            display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; max-width: 500px;
-        }
+        .badges-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; max-width: 500px; }
         .badge {
             padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 700;
             cursor: help; position: relative; border: 1px solid transparent;
@@ -129,7 +129,6 @@
         .badge.yes { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
         .badge.no { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
         
-        /* Efekt natywnego dymka dla baretek */
         .has-tooltip::after {
             content: attr(data-desc); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
             background: #111827; color: #fff; padding: 8px 12px; border-radius: 4px;
@@ -138,7 +137,6 @@
         }
         .has-tooltip:hover::after { opacity: 1; }
 
-        /* Okno Modalne (Źródła Sondaży) */
         .modal-overlay {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
             z-index: 2000; align-items: center; justify-content: center;
@@ -157,55 +155,32 @@
         .modal-table th { background: #f9fafb; font-weight: 600; color: #4b5563; }
         .modal-table td:first-child { text-align: left; font-weight: 600; }
 
+        #polska-mapa svg {
+            width: 100%; height: auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+        }
+        #polska-mapa path {
+            stroke: #ffffff; stroke-width: 1px; transition: all 0.2s; cursor: pointer;
+        }
+        #polska-mapa path:hover {
+            opacity: 0.8; stroke-width: 2px;
+        }
+        #map-tooltip {
+            position: absolute; display: none; background: #111827; color: #fff;
+            padding: 12px; border-radius: 8px; font-size: 13px; z-index: 2000;
+            pointer-events: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            text-align: left; min-width: 180px;
+        }
+
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 13px; color: #6b7280; }
 
-        @media (max-width: 900px) {
-            body { padding: 15px; }
+        @media (max-width: 1000px) {
+            .main-layout { grid-template-columns: 1fr; gap: 50px; }
+            .dashboard-col { align-items: stretch; text-align: center; }
             .container { padding: 20px 15px; }
             .header { flex-direction: column; align-items: flex-start; gap: 15px; }
             .badges-container { justify-content: flex-start; }
-            .main-layout { flex-direction: column; gap: 30px; }
-            .chart-section { width: 100%; min-width: auto; }
             .table-section { width: 100%; overflow-x: auto; }
             .progress-track { width: 70px; }
-            .seat-total { bottom: 10px; }
-            .seat-total span { font-size: 11px; }
-            .seat-total strong { font-size: 26px; margin-top: 0; }
-            .chart-section { padding-bottom: 20px; }
-            .has-tooltip::after { white-space: normal; width: 200px; text-align: center; } /* Zawijanie dymków na telefonie */
-        }
-    .btn-scenario {
-            padding: 10px 20px;
-            background: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #374151;
-            font-size: 14px;
-            transition: all 0.2s;
-            /* Nowe linijki układające obrazki poziomo: */
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .btn-scenario.active { background: #1d4ed8; color: #ffffff; border-color: #1d4ed8; }
-        .btn-scenario:hover:not(.active) { background: #e5e7eb; }
-
-        /* Klasy dla obrazków i plusów */
-        .btn-logo {
-            height: 27px; /* Tu możesz zmienić wielkość obrazka */
-            width: auto;
-            border-radius: 2px;
-        }
-        .plus-sign {
-            color: #9ca3af;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .btn-scenario.active .plus-sign {
-            color: #93c5fd; /* Jaśniejszy plus, żeby był widoczny na niebieskim tle aktywnego przycisku */
         }
     </style>
 </head>
@@ -222,6 +197,8 @@
         </div>
         <div id="majority-status" class="badges-container"></div>
     </div>
+
+    <div style="margin-bottom: 12px; font-weight: 600; color: #4b5563; font-size: 15px;">Wybierz wariant startu komitetów:</div>
 
     <div class="scenarios" id="scenario-selector">
         <button class="btn-scenario active" onclick="setScenario('osobno', this)">Start osobny</button>
@@ -269,9 +246,7 @@
                 <img src="logos/PSL.png" class="btn-logo">
                 <img src="logos/pl2050.png" class="btn-logo">
             </div>
-            
             <span style="margin: 0 10px; color: #9ca3af; font-size: 11px;">VS</span>
-            
             <div style="display: flex; align-items: center; gap: 4px;">
                 <img src="logos/PiS.png" class="btn-logo">
                 <img src="logos/Konfederacja.png" class="btn-logo">
@@ -281,24 +256,36 @@
     </div>
 
     <div class="main-layout">
-        <div class="chart-section">
+        
+        <div class="dashboard-col">
             <h2>Wizualizacja Sali</h2>
-            <div id="parliament-chart"></div>
+            <div id="parliament-chart" style="width: 100%;"></div>
         </div>
 
-        <div class="table-section">
+        <div class="dashboard-col">
+            <h2>Mapa Wyników</h2>
+            <div id="polska-mapa" style="width: 100%; position: relative;">
+                <div id="map-loading" style="text-align: center; color: #6b7280;">Ładowanie mapy...</div>
+            </div>
+            <div style="font-size: 11px; color: #9ca3af; margin-top: 15px; text-align: center;">
+                Źródło mapy: drastus/sejm-calculator, na bazie Lukasb1992 (CC BY-SA 4.0)
+            </div>
+        </div>
+
+        <div class="dashboard-col table-section" style="align-items: stretch;">
+            <h2>Podział Mandatów</h2>
             <table>
                 <thead>
                     <tr>
                         <th>Komitety Wyborcze</th>
                         <th class="col-right">Poparcie</th>
-                        <th class="col-right" style="width: 200px;">Mandaty</th>
+                        <th class="col-right">Mandaty</th>
                     </tr>
                 </thead>
-                <tbody id="results-table">
-                    </tbody>
+                <tbody id="results-table"></tbody>
             </table>
         </div>
+
     </div>
 </div>
 
@@ -312,7 +299,6 @@
         <button class="modal-close" onclick="document.getElementById('polls-modal').style.display='none'">&times;</button>
         <h2 style="margin-top: 0; color: #111827;">Źródła Sondaży</h2>
         <p style="color: #6b7280; font-size: 14px; margin-top: -10px;">Z tych badań wyliczono średnią do symulacji.</p>
-        
         <table class="modal-table">
             <thead id="modal-table-head"></thead>
             <tbody id="modal-table-body"></tbody>
@@ -321,14 +307,20 @@
 </div>
 
 <div id="tooltip"></div>
+<div id="map-tooltip"></div>
 
 <script>
-// KONFIGURACJA
+// --- ZMIENNE GLOBALNE ---
+let currentScenario = 'osobno';
+let pollAverages = {};
+let districtResultsData = {}; // Zmienna u samej góry ratuje salę przed znikaniem!
+
+// --- KONFIGURACJA ---
 const partyConfig = {
     'KO': { name: 'Koalicja Obywatelska', color: '227, 125, 0', axis: 2, parent: 'KO' },
     'PiS': { name: 'Prawo i Sprawiedliwość', color: '38, 52, 140', axis: 6, parent: 'PiS' },
     'Kon': { name: 'Konfederacja', color: '18, 47, 71', axis: 4, parent: 'Konfederacja' },
-    'Bra': { name: 'Korona', color: '92, 60, 24', axis: 5, parent: 'Konfederacja' },
+    'Bra': { name: 'KKP', color: '92, 60, 24', axis: 5, parent: 'Konfederacja' },
     'Lew': { name: 'Nowa Lewica', color: '200, 16, 46', axis: 1, parent: 'Lewica' },
     'PSL': { name: 'PSL', color: '27, 177, 0', axis: 3, parent: 'TD' },
     'Raz': { name: 'Razem', color: '135, 15, 87', axis: 1, parent: 'Lewica' },
@@ -338,118 +330,68 @@ const partyConfig = {
 
 const scenarios = {
     'osobno': { blocks: {}, retention: {} }, 
-    
     'blok1': { 
-        blocks: {
-            'KO': 'KO + Lew + PSL + Raz + PL2050', 
-            'Lew': 'KO + Lew + PSL + Raz + PL2050', 
-            'PSL': 'KO + Lew + PSL + Raz + PL2050', 
-            'Raz': 'KO + Lew + PSL + Raz + PL2050', 
-            'PL2050': 'KO + Lew + PSL + Raz + PL2050',
-            'Centrum': 'KO + Lew + PSL + Raz + PL2050'
-        },
-        retention: { 'KO + Lew + PSL + Raz + PL2050': 0.93 }
+        blocks: { 'KO': 'K1', 'Lew': 'K1', 'PSL': 'K1', 'Raz': 'K1', 'PL2050': 'K1', 'Centrum': 'K1' },
+        retention: { 'K1': 0.93 }
     },
-    
     'blok2': { 
-        blocks: {
-            'KO': 'KO + Lew + PSL + PL2050', 
-            'Lew': 'KO + Lew + PSL + PL2050', 
-            'PSL': 'KO + Lew + PSL + PL2050', 
-            'PL2050': 'KO + Lew + PSL + PL2050',
-            'Centrum': 'KO + Lew + PSL + PL2050'
-        },
-        retention: { 'KO + Lew + PSL + PL2050': 0.95 }
+        blocks: { 'KO': 'K2', 'Lew': 'K2', 'PSL': 'K2', 'PL2050': 'K2', 'Centrum': 'K2' },
+        retention: { 'K2': 0.95 }
     },
-    
-    'blok3': { 
-        blocks: { 'KO': 'KO + PSL', 'PSL': 'KO + PSL' },
-        retention: { 'KO + PSL': 0.97 }
-    },
-    
-    'blok4': { 
-        blocks: { 'KO': 'KO + Lewica', 'Lew': 'KO + Lewica' },
-        retention: { 'KO + Lewica': 0.97 }
-    },
-    
-    'blok5': { 
-        blocks: { 'PiS': 'PiS + Konf + KKP', 'Kon': 'PiS + Konf + KKP', 'Bra': 'PiS + Konf + KKP' },
-        retention: { 'PiS + Konf + KKP': 0.92 }
-    },
-    
-    'blok6': { 
-        blocks: { 'Kon': 'Konf + KKP', 'Bra': 'Konf + KKP' },
-        retention: { 'Konf + KKP': 1.0 }
-    },
+    'blok3': { blocks: { 'KO': 'KO+PSL', 'PSL': 'KO+PSL' }, retention: { 'KO+PSL': 0.97 } },
+    'blok4': { blocks: { 'KO': 'KO+Lew', 'Lew': 'KO+Lew' }, retention: { 'KO+Lew': 0.97 } },
+    'blok5': { blocks: { 'PiS': 'ZP', 'Kon': 'ZP', 'Bra': 'ZP' }, retention: { 'ZP': 0.92 } },
+    'blok6': { blocks: { 'Kon': 'K+K', 'Bra': 'K+K' }, retention: { 'K+K': 1.0 } },
     'blok7': { 
-        blocks: { 
-            // Blok pierwszy
-            'KO': 'Koalicja 15.X', 
-            'Lew': 'Koalicja 15.X', 
-            'PSL': 'Koalicja 15.X', 
-            'PL2050': 'Koalicja 15.X',
-            'Centrum': 'Koalicja 15.X',
-            // Blok drugi
-            'PiS': 'Prawica', 
-            'Kon': 'Prawica', 
-            'Bra': 'Prawica' 
-        },
-        retention: { 
-            // Utrzymanie poparcia z poprzednich wariantów
-            'Koalicja 15.X': 0.95, 
-            'Prawica': 0.92 
-        }
+        blocks: { 'KO': 'K15X', 'Lew': 'K15X', 'PSL': 'K15X', 'PL2050': 'K15X', 'Centrum': 'K15X', 'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica' },
+        retention: { 'K15X': 0.95, 'Prawica': 0.92 }
     }
 };
 
-// D'Hondt Baseline
 const baseline = {'PiS':35.38, 'KO':30.70, 'TD':14.40, 'Lewica':8.61, 'Konfederacja':7.16};
 const districts = [
-    {seats: 12, results: {'PiS':34.8, 'KO':33.78, 'TD':10.75, 'Lewica':9.51, 'Konfederacja':6.33}},
-    {seats: 8, results: {'PiS':33.34, 'KO':37.17, 'TD':12.13, 'Lewica':7.98, 'Konfederacja':6.02}},
-    {seats: 14, results: {'PiS':26.66, 'KO':36.94, 'TD':13.74, 'Lewica':11.35, 'Konfederacja':6.98}},
-    {seats: 12, results: {'PiS':30.45, 'KO':35.01, 'TD':15.06, 'Lewica':9.92, 'Konfederacja':6.42}},
-    {seats: 13, results: {'PiS':34.06, 'KO':29.52, 'TD':15.68, 'Lewica':11.25, 'Konfederacja':6.37}},
-    {seats: 15, results: {'PiS':45.48, 'KO':20.32, 'TD':15.87, 'Lewica':5.72, 'Konfederacja':8.38}},
-    {seats: 12, results: {'PiS':50.75, 'KO':17.4, 'TD':13.04, 'Lewica':5.62, 'Konfederacja':7.79}},
-    {seats: 12, results: {'PiS':27.76, 'KO':37.73, 'TD':15.07, 'Lewica':9.27, 'Konfederacja':6.51}},
-    {seats: 10, results: {'PiS':26.82, 'KO':41.07, 'TD':11.89, 'Lewica':12.22, 'Konfederacja':5.57}},
-    {seats: 9, results: {'PiS':46.6, 'KO':21.69, 'TD':13.73, 'Lewica':6.39, 'Konfederacja':7.62}},
-    {seats: 12, results: {'PiS':41.46, 'KO':25.89, 'TD':14.5, 'Lewica':7.73, 'Konfederacja':6.82}},
-    {seats: 8, results: {'PiS':42.86, 'KO':24.24, 'TD':14.97, 'Lewica':6.04, 'Konfederacja':7.88}},
-    {seats: 14, results: {'PiS':30.68, 'KO':30.73, 'TD':16.86, 'Lewica':11.04, 'Konfederacja':7.71}},
-    {seats: 10, results: {'PiS':53.73, 'KO':16.1, 'TD':11.58, 'Lewica':3.18, 'Konfederacja':8.73}},
-    {seats: 9, results: {'PiS':48.67, 'KO':17.02, 'TD':18.64, 'Lewica':4.0, 'Konfederacja':7.99}},
-    {seats: 10, results: {'PiS':44.11, 'KO':22.4, 'TD':17.07, 'Lewica':6.52, 'Konfederacja':6.52}},
-    {seats: 9, results: {'PiS':48.68, 'KO':20.96, 'TD':13.98, 'Lewica':5.34, 'Konfederacja':7.31}},
-    {seats: 12, results: {'PiS':48.62, 'KO':18.71, 'TD':15.51, 'Lewica':4.85, 'Konfederacja':8.21}},
-    {seats: 20, results: {'PiS':20.14, 'KO':43.23, 'TD':13.25, 'Lewica':13.45, 'Konfederacja':7.24}},
-    {seats: 12, results: {'PiS':31.74, 'KO':35.23, 'TD':15.06, 'Lewica':7.06, 'Konfederacja':7.06}},
-    {seats: 12, results: {'PiS':31.26, 'KO':33.59, 'TD':12.74, 'Lewica':7.24, 'Konfederacja':6.49}},
-    {seats: 11, results: {'PiS':54.7, 'KO':15.85, 'TD':13.79, 'Lewica':4.47, 'Konfederacja':8.62}},
-    {seats: 15, results: {'PiS':51.6, 'KO':17.7, 'TD':12.42, 'Lewica':4.87, 'Konfederacja':9.48}},
-    {seats: 14, results: {'PiS':42.39, 'KO':20.84, 'TD':18.86, 'Lewica':4.84, 'Konfederacja':9.79}},
-    {seats: 12, results: {'PiS':25.2, 'KO':41.7, 'TD':14.7, 'Lewica':9.41, 'Konfederacja':6.23}},
-    {seats: 14, results: {'PiS':29.24, 'KO':37.91, 'TD':13.59, 'Lewica':8.33, 'Konfederacja':7.21}},
-    {seats: 9, results: {'PiS':36.71, 'KO':28.67, 'TD':14.55, 'Lewica':7.77, 'Konfederacja':7.84}},
-    {seats: 7, results: {'PiS':36.35, 'KO':29.11, 'TD':14.72, 'Lewica':9.41, 'Konfederacja':6.56}},
-    {seats: 9, results: {'PiS':30.16, 'KO':36.06, 'TD':13.34, 'Lewica':9.21, 'Konfederacja':6.95}},
-    {seats: 9, results: {'PiS':38.06, 'KO':29.98, 'TD':12.45, 'Lewica':6.84, 'Konfederacja':8.0}},
-    {seats: 12, results: {'PiS':30.88, 'KO':36.79, 'TD':13.27, 'Lewica':8.46, 'Konfederacja':6.7}},
-    {seats: 9, results: {'PiS':29.74, 'KO':30.3, 'TD':9.85, 'Lewica':21.6, 'Konfederacja':5.69}},
-    {seats: 16, results: {'PiS':47.07, 'KO':20.93, 'TD':13.8, 'Lewica':6.83, 'Konfederacja':6.55}},
-    {seats: 8, results: {'PiS':35.2, 'KO':31.87, 'TD':15.4, 'Lewica':8.11, 'Konfederacja':6.54}},
-    {seats: 10, results: {'PiS':32.33, 'KO':33.07, 'TD':16.11, 'Lewica':8.09, 'Konfederacja':6.93}},
-    {seats: 12, results: {'PiS':35.85, 'KO':28.58, 'TD':16.16, 'Lewica':8.52, 'Konfederacja':6.98}},
-    {seats: 9, results: {'PiS':38.69, 'KO':23.99, 'TD':16.63, 'Lewica':9.48, 'Konfederacja':6.97}},
-    {seats: 9, results: {'PiS':29.11, 'KO':34.87, 'TD':17.66, 'Lewica':7.84, 'Konfederacja':6.87}},
-    {seats: 10, results: {'PiS':19.57, 'KO':44.09, 'TD':16.54, 'Lewica':12.31, 'Konfederacja':5.9}},
-    {seats: 8, results: {'PiS':31.36, 'KO':38.69, 'TD':12.35, 'Lewica':8.72, 'Konfederacja':6.02}},
-    {seats: 12, results: {'PiS':28.79, 'KO':40.13, 'TD':12.62, 'Lewica':9.39, 'Konfederacja':5.94}}
+    {seats: 12, results: {'PiS':34.8, 'KO':33.78, 'TD':10.75, 'Lewica':9.51, 'Konfederacja':6.33}, name: 'Legnica'},
+    {seats: 8, results: {'PiS':33.34, 'KO':37.17, 'TD':12.13, 'Lewica':7.98, 'Konfederacja':6.02}, name: 'Wałbrzych'},
+    {seats: 14, results: {'PiS':26.66, 'KO':36.94, 'TD':13.74, 'Lewica':11.35, 'Konfederacja':6.98}, name: 'Wrocław'},
+    {seats: 12, results: {'PiS':30.45, 'KO':35.01, 'TD':15.06, 'Lewica':9.92, 'Konfederacja':6.42}, name: 'Bydgoszcz'},
+    {seats: 13, results: {'PiS':34.06, 'KO':29.52, 'TD':15.68, 'Lewica':11.25, 'Konfederacja':6.37}, name: 'Toruń'},
+    {seats: 15, results: {'PiS':45.48, 'KO':20.32, 'TD':15.87, 'Lewica':5.72, 'Konfederacja':8.38}, name: 'Lublin'},
+    {seats: 12, results: {'PiS':50.75, 'KO':17.4, 'TD':13.04, 'Lewica':5.62, 'Konfederacja':7.79}, name: 'Chełm'},
+    {seats: 12, results: {'PiS':27.76, 'KO':37.73, 'TD':15.07, 'Lewica':9.27, 'Konfederacja':6.51}, name: 'Zielona Góra'},
+    {seats: 10, results: {'PiS':26.82, 'KO':41.07, 'TD':11.89, 'Lewica':12.22, 'Konfederacja':5.57}, name: 'Łódź'},
+    {seats: 9, results: {'PiS':46.6, 'KO':21.69, 'TD':13.73, 'Lewica':6.39, 'Konfederacja':7.62}, name: 'Piotrków'},
+    {seats: 12, results: {'PiS':41.46, 'KO':25.89, 'TD':14.5, 'Lewica':7.73, 'Konfederacja':6.82}, name: 'Sieradz'},
+    {seats: 8, results: {'PiS':42.86, 'KO':24.24, 'TD':14.97, 'Lewica':6.04, 'Konfederacja':7.88}, name: 'Kraków I'},
+    {seats: 14, results: {'PiS':30.68, 'KO':30.73, 'TD':16.86, 'Lewica':11.04, 'Konfederacja':7.71}, name: 'Kraków II'},
+    {seats: 10, results: {'PiS':53.73, 'KO':16.1, 'TD':11.58, 'Lewica':3.18, 'Konfederacja':8.73}, name: 'Nowy Sącz'},
+    {seats: 9, results: {'PiS':48.67, 'KO':17.02, 'TD':18.64, 'Lewica':4.0, 'Konfederacja':7.99}, name: 'Tarnów'},
+    {seats: 10, results: {'PiS':44.11, 'KO':22.4, 'TD':17.07, 'Lewica':6.52, 'Konfederacja':6.52}, name: 'Płock'},
+    {seats: 9, results: {'PiS':48.68, 'KO':20.96, 'TD':13.98, 'Lewica':5.34, 'Konfederacja':7.31}, name: 'Radom'},
+    {seats: 12, results: {'PiS':48.62, 'KO':18.71, 'TD':15.51, 'Lewica':4.85, 'Konfederacja':8.21}, name: 'Siedlce'},
+    {seats: 20, results: {'PiS':20.14, 'KO':43.23, 'TD':13.25, 'Lewica':13.45, 'Konfederacja':7.24}, name: 'Warszawa I'},
+    {seats: 12, results: {'PiS':31.74, 'KO':35.23, 'TD':15.06, 'Lewica':7.06, 'Konfederacja':7.06}, name: 'Warszawa II'},
+    {seats: 12, results: {'PiS':31.26, 'KO':33.59, 'TD':12.74, 'Lewica':7.24, 'Konfederacja':6.49}, name: 'Opole'},
+    {seats: 11, results: {'PiS':54.7, 'KO':15.85, 'TD':13.79, 'Lewica':4.47, 'Konfederacja':8.62}, name: 'Krosno'},
+    {seats: 15, results: {'PiS':51.6, 'KO':17.7, 'TD':12.42, 'Lewica':4.87, 'Konfederacja':9.48}, name: 'Rzeszów'},
+    {seats: 14, results: {'PiS':42.39, 'KO':20.84, 'TD':18.86, 'Lewica':4.84, 'Konfederacja':9.79}, name: 'Białystok'},
+    {seats: 12, results: {'PiS':25.2, 'KO':41.7, 'TD':14.7, 'Lewica':9.41, 'Konfederacja':6.23}, name: 'Gdańsk'},
+    {seats: 14, results: {'PiS':29.24, 'KO':37.91, 'TD':13.59, 'Lewica':8.33, 'Konfederacja':7.21}, name: 'Gdynia'},
+    {seats: 9, results: {'PiS':36.71, 'KO':28.67, 'TD':14.55, 'Lewica':7.77, 'Konfederacja':7.84}, name: 'Bielsko-Biała'},
+    {seats: 7, results: {'PiS':36.35, 'KO':29.11, 'TD':14.72, 'Lewica':9.41, 'Konfederacja':6.56}, name: 'Częstochowa'},
+    {seats: 9, results: {'PiS':30.16, 'KO':36.06, 'TD':13.34, 'Lewica':9.21, 'Konfederacja':6.95}, name: 'Gliwice'},
+    {seats: 9, results: {'PiS':38.06, 'KO':29.98, 'TD':12.45, 'Lewica':6.84, 'Konfederacja':8.0}, name: 'Rybnik'},
+    {seats: 12, results: {'PiS':30.88, 'KO':36.79, 'TD':13.27, 'Lewica':8.46, 'Konfederacja':6.7}, name: 'Katowice'},
+    {seats: 9, results: {'PiS':29.74, 'KO':30.3, 'TD':9.85, 'Lewica':21.6, 'Konfederacja':5.69}, name: 'Sosnowiec'},
+    {seats: 16, results: {'PiS':47.07, 'KO':20.93, 'TD':13.8, 'Lewica':6.83, 'Konfederacja':6.55}, name: 'Kielce'},
+    {seats: 8, results: {'PiS':35.2, 'KO':31.87, 'TD':15.4, 'Lewica':8.11, 'Konfederacja':6.54}, name: 'Elbląg'},
+    {seats: 10, results: {'PiS':32.33, 'KO':33.07, 'TD':16.11, 'Lewica':8.09, 'Konfederacja':6.93}, name: 'Olsztyn'},
+    {seats: 12, results: {'PiS':35.85, 'KO':28.58, 'TD':16.16, 'Lewica':8.52, 'Konfederacja':6.98}, name: 'Kalisz'},
+    {seats: 9, results: {'PiS':38.69, 'KO':23.99, 'TD':16.63, 'Lewica':9.48, 'Konfederacja':6.97}, name: 'Konin'},
+    {seats: 9, results: {'PiS':29.11, 'KO':34.87, 'TD':17.66, 'Lewica':7.84, 'Konfederacja':6.87}, name: 'Piła'},
+    {seats: 10, results: {'PiS':19.57, 'KO':44.09, 'TD':16.54, 'Lewica':12.31, 'Konfederacja':5.9}, name: 'Poznań'},
+    {seats: 8, results: {'PiS':31.36, 'KO':38.69, 'TD':12.35, 'Lewica':8.72, 'Konfederacja':6.02}, name: 'Koszalin'},
+    {seats: 12, results: {'PiS':28.79, 'KO':40.13, 'TD':12.62, 'Lewica':9.39, 'Konfederacja':5.94}, name: 'Szczecin'}
 ];
-
-let currentScenario = 'osobno';
-let pollAverages = {};
 
 function setScenario(id, btn) {
     currentScenario = id;
@@ -463,16 +405,15 @@ function parseDateString(dateString) {
     return new Date(parts[2], parts[1] - 1, parts[0]);
 }
 
+// INICJALIZACJA
 fetch('sondaze.json')
     .then(r => r.json())
     .then(data => {
         let count = data.length;
         let sums = {};
-        
         let minDate = new Date(8640000000000000);
         let maxDate = new Date(-8640000000000000);
         
-        // Zbieranie i uśrednianie danych
         data.forEach(poll => {
             let total = 0;
             if(poll.data) {
@@ -488,7 +429,6 @@ fetch('sondaze.json')
         
         for(let k in partyConfig) pollAverages[k] = count > 0 ? (sums[k]/count) : 0;
         
-        // Wypisywanie pięknej daty
         let dateText = "";
         if (minDate <= maxDate) {
             const fmt = d => d.toLocaleDateString('pl-PL', {day: '2-digit', month: '2-digit', year: 'numeric'});
@@ -496,16 +436,13 @@ fetch('sondaze.json')
         }
         document.getElementById('poll-info').innerText = `Średnia sondażowa ${dateText} – baza ${count} badań.`;
         
-        // GENEROWANIE TABELI MODALA
         let th = '<tr><th>Data</th><th>Sondażownia</th>';
-        // Tutaj zmieniamy, żeby brał klucz 'k' (czyli KO, PiS, Kon), a nie ucięte pierwsze słowo
         for(let k in partyConfig) th += `<th>${k}</th>`; 
         th += '</tr>';
         document.getElementById('modal-table-head').innerHTML = th;
 
         let tb = '';
         data.forEach(poll => {
-            // Dodajemy poll.sondazownia, bo tak masz to wpisane w swoim JSON-ie
             tb += `<tr><td>${poll.data || '-'}</td><td>${poll.sondazownia || 'Nieznana'}</td>`;
             for(let k in partyConfig) tb += `<td>${poll.wyniki[k] ? poll.wyniki[k]+'%' : '-'}</td>`;
             tb += '</tr>';
@@ -550,8 +487,10 @@ function runSimulation() {
         };
     }
 
-    districts.forEach(ddata => {
+    districts.forEach((ddata, index) => {
         let localV = {};
+        let localSeats = {}; 
+
         for (let gid in finalLists) {
             let l = finalLists[gid];
             let hl = 0, hn = 0, cn = 0;
@@ -561,6 +500,7 @@ function runSimulation() {
                 else { hl += c.v; hn += c.v; }
             });
             localV[gid] = (hn > 0 ? (hl * (cn / hn)) : 0) * l.retRate;
+            localSeats[gid] = 0; 
         }
 
         let quot = [];
@@ -571,9 +511,32 @@ function runSimulation() {
         quot.sort((a,b) => b.v - a.v);
 
         for (let i = 0; i < ddata.seats; i++) {
-            if (quot[i]) finalLists[quot[i].id].seats++;
+            if (quot[i]) {
+                finalLists[quot[i].id].seats++; 
+                localSeats[quot[i].id]++;       
+            }
         }
-    });
+
+        let districtId = index + 1; 
+        let winnerId = Object.keys(localV).reduce((a, b) => localV[a] > localV[b] ? a : b);
+        let winnerColor = finalLists[winnerId].color;
+
+        let sortedResults = Object.keys(localV)
+            .filter(gid => localV[gid] > 0)
+            .map(gid => ({
+                name: finalLists[gid].name,
+                perc: localV[gid].toFixed(1),
+                seats: localSeats[gid]
+            }))
+            .sort((a, b) => parseFloat(b.perc) - parseFloat(a.perc));
+
+        districtResultsData[districtId] = {
+            winnerColor: winnerColor,
+            results: sortedResults
+        };
+    }); 
+
+    colorMap();
 
     let resultsArray = Object.values(finalLists).filter(l => l.support > 0);
     updateUI(resultsArray);
@@ -587,7 +550,7 @@ function updateUI(lists) {
         let isOut = !l.qualified;
         let rowClass = isOut ? 'row-disabled' : '';
         let colorBox = isOut ? '#d1d5db' : `rgb(${l.color})`;
-        let subText = isOut ? '<span class="text-muted">Poza podziałem</span>' : '';
+        let subText = isOut ? '<span class="text-muted">Poza</span>' : '';
         let progressWidth = l.seats > 0 ? (l.seats / 460) * 100 : 0;
         
         html += `
@@ -611,7 +574,6 @@ function updateUI(lists) {
     });
     document.getElementById('results-table').innerHTML = html;
 
-    // --- WYŚWIETLANIE STATUSÓW WIĘKSZOŚCI ---
     let leaderSeats = lists.length > 0 ? lists[0].seats : 0;
     
     let m231 = leaderSeats >= 231;
@@ -707,6 +669,65 @@ function drawParliament(lists) {
             tooltip.style.display = 'none';
             groups.forEach(g => g.style.opacity = '1');
         });
+    });
+} 
+
+// MAPA
+fetch('c41.svg')
+    .then(response => response.text())
+    .then(svgContent => {
+        document.getElementById('polska-mapa').innerHTML = svgContent;
+        setupMapInteractions();
+        if (Object.keys(districtResultsData).length > 0) {
+            colorMap(); 
+        }
+    });
+
+function colorMap() {
+    for (let districtId in districtResultsData) {
+        let data = districtResultsData[districtId];
+        let path = document.querySelector(`path[data-cid="${districtId}"]`);
+        
+        if (path && data.results.length > 0) {
+            let winnerColor = data.winnerColor;
+            let winnerPerc = parseFloat(data.results[0].perc);
+            let alpha = Math.min(1.0, 0.3 + (winnerPerc / 50)); 
+            path.style.fill = `rgba(${winnerColor}, ${alpha})`;
+        }
+    }
+}
+
+function setupMapInteractions() {
+    const mapContainer = document.getElementById('polska-mapa');
+    const tooltip = document.getElementById('map-tooltip');
+
+    mapContainer.addEventListener('mousemove', (e) => {
+        const path = e.target.closest('path');
+        if (path) {
+            const districtId = path.getAttribute('data-cid');
+            if (!districtId) return; 
+            
+            const data = districtResultsData[districtId];
+            if (data) {
+                let html = `<strong>Okręg ${districtId}: ${districts[districtId-1].name || ''}</strong><hr style="margin:5px 0; border:0; border-top:1px solid #444;">`;
+                data.results.forEach(res => {
+                    html += `<div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                        <span>${res.name}:</span>
+                        <span><b>${res.perc}%</b> (${res.seats} m.)</span>
+                    </div>`;
+                });
+                tooltip.innerHTML = html;
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.pageX + 15) + 'px';
+                tooltip.style.top = (e.pageY + 15) + 'px';
+            }
+        } else {
+            tooltip.style.display = 'none';
+        }
+    });
+
+    mapContainer.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
     });
 }
 </script>
