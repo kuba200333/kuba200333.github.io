@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wybory Parlamentarne</title>
     <style>
         body {
@@ -198,6 +199,43 @@
             color: #1d4ed8;
             text-decoration: none;
             font-weight: 600;
+        }
+        /* ----- RESPONSYWNOŚĆ (TELEFONY) ----- */
+        @media (max-width: 900px) {
+            body {
+                padding: 15px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            #majority-status {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+            .main-layout {
+                flex-direction: column; /* Ustawia wykres nad tabelą */
+                gap: 30px;
+            }
+            .chart-section {
+                width: 100%;
+                min-width: auto; /* Zdejmuje sztywne 450px */
+            }
+            .table-section {
+                width: 100%;
+                overflow-x: auto; /* Tabela będzie mogła być przesuwana palcem na boki, jeśli zabraknie miejsca */
+            }
+            .progress-track {
+                width: 70px; /* Krótsze paski w tabeli na małym ekranie */
+            }
+            .seat-total strong {
+                font-size: 32px; /* Mniejszy napis "460" na telefonie */
+            }
         }
     </style>
 </head>
