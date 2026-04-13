@@ -330,21 +330,66 @@ const partyConfig = {
 
 const scenarios = {
     'osobno': { blocks: {}, retention: {} }, 
+    
     'blok1': { 
-        blocks: { 'KO': 'K1', 'Lew': 'K1', 'PSL': 'K1', 'Raz': 'K1', 'PL2050': 'K1', 'Centrum': 'K1' },
-        retention: { 'K1': 0.93 }
+        blocks: { 
+            'KO': 'KO + Lewica + PSL + Razem + PL2050', 
+            'Lew': 'KO + Lewica + PSL + Razem + PL2050', 
+            'PSL': 'KO + Lewica + PSL + Razem + PL2050', 
+            'Raz': 'KO + Lewica + PSL + Razem + PL2050', 
+            'PL2050': 'KO + Lewica + PSL + Razem + PL2050', 
+            'Centrum': 'KO + Lewica + PSL + Razem + PL2050' 
+        },
+        retention: { 'KO + Lewica + PSL + Razem + PL2050': 0.93 }
     },
+    
     'blok2': { 
-        blocks: { 'KO': 'K2', 'Lew': 'K2', 'PSL': 'K2', 'PL2050': 'K2', 'Centrum': 'K2' },
-        retention: { 'K2': 0.95 }
+        blocks: { 
+            'KO': 'KO + Lewica + PSL + PL2050', 
+            'Lew': 'KO + Lewica + PSL + PL2050', 
+            'PSL': 'KO + Lewica + PSL + PL2050', 
+            'PL2050': 'KO + Lewica + PSL + PL2050', 
+            'Centrum': 'KO + Lewica + PSL + PL2050' 
+        },
+        retention: { 'KO + Lewica + PSL + PL2050': 0.95 }
     },
-    'blok3': { blocks: { 'KO': 'KO+PSL', 'PSL': 'KO+PSL' }, retention: { 'KO+PSL': 0.97 } },
-    'blok4': { blocks: { 'KO': 'KO+Lew', 'Lew': 'KO+Lew' }, retention: { 'KO+Lew': 0.97 } },
-    'blok5': { blocks: { 'PiS': 'ZP', 'Kon': 'ZP', 'Bra': 'ZP' }, retention: { 'ZP': 0.92 } },
-    'blok6': { blocks: { 'Kon': 'K+K', 'Bra': 'K+K' }, retention: { 'K+K': 1.0 } },
+    
+    'blok3': { 
+        blocks: { 'KO': 'KO + PSL', 'PSL': 'KO + PSL' }, 
+        retention: { 'KO + PSL': 0.97 } 
+    },
+    
+    'blok4': { 
+        blocks: { 'KO': 'KO + Lewica', 'Lew': 'KO + Lewica' }, 
+        retention: { 'KO + Lewica': 0.97 } 
+    },
+    
+    'blok5': { 
+        blocks: { 'PiS': 'PiS + Konfederacja + KKP', 'Kon': 'PiS + Konfederacja + KKP', 'Bra': 'PiS + Konfederacja + KKP' }, 
+        retention: { 'PiS + Konfederacja + KKP': 0.92 } 
+    },
+    
+    'blok6': { 
+        blocks: { 'Kon': 'Konfederacja + KKP', 'Bra': 'Konfederacja + KKP' }, 
+        retention: { 'Konfederacja + KKP': 1.0 } 
+    },
+    
     'blok7': { 
-        blocks: { 'KO': 'K15X', 'Lew': 'K15X', 'PSL': 'K15X', 'PL2050': 'K15X', 'Centrum': 'K15X', 'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica' },
-        retention: { 'K15X': 0.95, 'Prawica': 0.92 }
+        blocks: { 
+            'KO': 'Koalicja 15 Października', 
+            'Lew': 'Koalicja 15 Października', 
+            'PSL': 'Koalicja 15 Października', 
+            'PL2050': 'Koalicja 15 Października', 
+            'Centrum': 'Koalicja 15 Października', 
+            'Raz': 'Koalicja 15 Października',
+            'PiS': 'PiS + Konfederacja + KKP', 
+            'Kon': 'PiS + Konfederacja + KKP', 
+            'Bra': 'PiS + Konfederacja + KKP' 
+        },
+        retention: { 
+            'Koalicja 15 Października': 0.95, 
+            'PiS + Konfederacja + KKP': 0.92 
+        }
     }
 };
 
