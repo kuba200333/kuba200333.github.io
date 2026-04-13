@@ -1,0 +1,66 @@
+[
+    {
+        "data": "09.04.2026",
+        "sondazownia": "Opinia24",
+        "wyniki": {
+            "KO": "37.5",
+            "PiS": "23.5",
+            "Kon": "13.6",
+            "Bra": "7",
+            "Lew": "7.4",
+            "Raz": "4.9",
+            "PSL": "2",
+            "PL2050": "3.3",
+            "Centrum": "0",
+            "Inna": "0"
+        }
+    },
+    {
+        "data": "10.04.2026",
+        "sondazownia": "Pollster",
+        "wyniki": {
+            "KO": "35.8",
+            "PiS": "27.3",
+            "Kon": "12",
+            "Bra": "7",
+            "Lew": "6",
+            "Raz": "4.7",
+            "PSL": "3.9",
+            "PL2050": "1.8",
+            "Centrum": "0",
+            "Inna": "0"
+        }
+    },
+    {
+        "data": "04.04.2026",
+        "sondazownia": "OGB_PL",
+        "wyniki": {
+            "KO": "38",
+            "PiS": "29.8",
+            "Kon": "11.4",
+            "Bra": "10",
+            "Lew": "4.9",
+            "Raz": "3.2",
+            "PSL": "1.6",
+            "PL2050": "1",
+            "Centrum": "0",
+            "Inna": "0"
+        }
+    },
+    {
+        "data": "01.04.2026",
+        "sondazownia": "united_surveys  ",
+        "wyniki": {
+            "KO": "33.5",
+            "PiS": "25",
+            "Kon": "13.5",
+            "Bra": "8.6",
+            "Lew": "8.4",
+            "Raz": "3.8",
+            "PSL": "5.5",
+            "PL2050": "2",
+            "Centrum": "0",
+            "Inna": "0"
+        }
+    }
+]

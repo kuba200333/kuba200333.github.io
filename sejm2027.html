@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wybory Parlamentarne</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            padding: 30px 40px;
+            flex-grow: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 { margin: 0 0 8px 0; font-size: 26px; font-weight: 700; }
+        .poll-info { color: #6b7280; font-size: 14px; font-weight: 500; }
+
+        .scenarios {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-scenario {
+            padding: 10px 20px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .btn-scenario.active {
+            background: #1d4ed8;
+            color: #ffffff;
+            border-color: #1d4ed8;
+        }
+        
+        .btn-scenario:hover:not(.active) { background: #e5e7eb; }
+
+        .main-layout {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* Sekcja sali (Lewa strona) */
+        .chart-section {
+            flex: 0 0 40%; /* Nieco szersza sekcja na wykres */
+            min-width: 450px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .chart-section h2 { margin-top: 0; font-size: 20px; margin-bottom: 30px; text-align: left;}
+        
+        .seat-total {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        
+        .seat-total span { display: block; font-size: 14px; color: #6b7280; }
+        .seat-total strong { display: block; font-size: 40px; font-weight: 800; color: #111827; margin-top: 4px; }
+
+        /* Sekcja tabeli (Prawa strona) */
+        .table-section { flex: 1; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 12px 8px;
+            color: #4b5563;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        td {
+            padding: 16px 8px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .col-right { text-align: right; }
+        th.col-right { text-align: right; }
+
+        .party-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .party-logo {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+        }
+        
+        .text-muted { color: #9ca3af; font-size: 13px; font-weight: 400; margin-left: 6px; }
+        .row-disabled { color: #9ca3af; }
+
+        /* Paski postępu dla mandatów */
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        
+        .progress-track {
+            width: 120px;
+            height: 10px;
+            background-color: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+        }
+
+        /* Interaktywna sala (SVG) */
+        .party-group {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        #tooltip {
+            position: absolute;
+            display: none;
+            background: #111827;
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            pointer-events: none;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 100;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        #majority-status {
+            font-size: 16px;
+            font-weight: 700;
+            padding: 10px 15px;
+            background: #f0fdf4;
+            color: #166534;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Stopka */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .footer a {
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>Symulacja Mandatów</h1>
+            <div id="poll-info" class="poll-info">Wczytywanie danych z sondaze.json...</div>
+        </div>
+        <div id="majority-status">Większość: Obliczanie...</div>
+    </div>
+
+    <div class="scenarios" id="scenario-selector">
+        <button class="btn-scenario active" onclick="setScenario('osobno', this)">Start osobny</button>
+        <button class="btn-scenario" onclick="setScenario('blok1', this)">KO + Lewica + PSL + Razem + PL2050</button>
+        <button class="btn-scenario" onclick="setScenario('blok2', this)">KO + Lewica + PSL + PL2050</button>
+        <button class="btn-scenario" onclick="setScenario('blok3', this)">KO + PSL</button>
+        <button class="btn-scenario" onclick="setScenario('blok4', this)">KO + Lewica</button>
+        <button class="btn-scenario" onclick="setScenario('blok5', this)">PiS + Konfederacja + Korona</button>
+        <button class="btn-scenario" onclick="setScenario('blok6', this)">Konfederacja + Korona</button>
+    </div>
+
+    <div class="main-layout">
+        <div class="chart-section">
+            <h2>Wizualizacja Sali</h2>
+            <div id="parliament-chart"></div>
+            <div class="seat-total">
+                <span>Liczba miejsc</span>
+                <strong>460</strong>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Komitety Wyborcze</th>
+                        <th class="col-right">Poparcie</th>
+                        <th class="col-right" style="width: 200px;">Mandaty</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    Metodologia: Przeliczenie poparcia w 41 okręgach wyborczych na mandaty (metoda D'Hondta) w oparciu o dystrybucję terytorialną z wyborów do Sejmu 2023 r.<br>
+    Autor i symulacja: <strong>@kuba200333</strong>
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+// KONFIGURACJA
+const partyConfig = {
+    'KO': { name: 'Koalicja Obywatelska', color: '227, 125, 0', axis: 2, parent: 'KO' },
+    'PiS': { name: 'Prawo i Sprawiedliwość', color: '38, 52, 140', axis: 6, parent: 'PiS' },
+    'Kon': { name: 'Konfederacja', color: '18, 47, 71', axis: 4, parent: 'Konfederacja' },
+    'Bra': { name: 'Korona', color: '92, 60, 24', axis: 5, parent: 'Konfederacja' },
+    'Lew': { name: 'Nowa Lewica', color: '200, 16, 46', axis: 1, parent: 'Lewica' },
+    'PSL': { name: 'PSL', color: '27, 177, 0', axis: 3, parent: 'TD' },
+    'Raz': { name: 'Razem', color: '135, 15, 87', axis: 1, parent: 'Lewica' },
+    'PL2050': { name: 'PL2050', color: '240, 232, 0', axis: 3, parent: 'TD' },
+    'Centrum': { name: 'Centrum', color: '0, 160, 150', axis: 3, parent: 'TD' }
+};
+
+const scenarios = {
+    'osobno': { blocks: {}, retention: {} }, 
+    
+    'blok1': { 
+        blocks: {
+            'KO': 'KO + Lew + PSL + Raz + PL2050', 
+            'Lew': 'KO + Lew + PSL + Raz + PL2050', 
+            'PSL': 'KO + Lew + PSL + Raz + PL2050', 
+            'Raz': 'KO + Lew + PSL + Raz + PL2050', 
+            'PL2050': 'KO + Lew + PSL + Raz + PL2050',
+            'Centrum': 'KO + Lew + PSL + Raz + PL2050'
+        },
+        retention: {
+            'KO + Lew + PSL + Raz + PL2050': 0.93
+        }
+    },
+    
+    'blok2': { 
+        blocks: {
+            'KO': 'KO + Lew + PSL + PL2050', 
+            'Lew': 'KO + Lew + PSL + PL2050', 
+            'PSL': 'KO + Lew + PSL + PL2050', 
+            'PL2050': 'KO + Lew + PSL + PL2050',
+            'Centrum': 'KO + Lew + PSL + PL2050'
+        },
+        retention: {
+            'KO + Lew + PSL + PL2050': 0.95
+        }
+    },
+    
+    'blok3': { 
+        blocks: { 'KO': 'KO + PSL', 'PSL': 'KO + PSL' },
+        retention: { 'KO + PSL': 0.97 }
+    },
+    
+    'blok4': { 
+        blocks: { 'KO': 'KO + Lewica', 'Lew': 'KO + Lewica' },
+        retention: { 'KO + Lewica': 0.97 }
+    },
+    
+    'blok5': { 
+        blocks: { 'PiS': 'PiS + Konf + KKP', 'Kon': 'PiS + Konf + KKP', 'Bra': 'PiS + Konf + KKP' },
+        retention: { 'PiS + Konf + KKP': 0.92 }
+    },
+    
+    'blok6': { 
+        blocks: { 'Kon': 'Konf + KKP', 'Bra': 'Konf + KKP' },
+        retention: { 'Konf + KKP': 1.0 }
+    }
+};
+
+// D'Hondt Baseline
+const baseline = {'PiS':35.38, 'KO':30.70, 'TD':14.40, 'Lewica':8.61, 'Konfederacja':7.16};
+const districts = [
+    {seats: 12, results: {'PiS':34.8, 'KO':33.78, 'TD':10.75, 'Lewica':9.51, 'Konfederacja':6.33}},
+    {seats: 8, results: {'PiS':33.34, 'KO':37.17, 'TD':12.13, 'Lewica':7.98, 'Konfederacja':6.02}},
+    {seats: 14, results: {'PiS':26.66, 'KO':36.94, 'TD':13.74, 'Lewica':11.35, 'Konfederacja':6.98}},
+    {seats: 12, results: {'PiS':30.45, 'KO':35.01, 'TD':15.06, 'Lewica':9.92, 'Konfederacja':6.42}},
+    {seats: 13, results: {'PiS':34.06, 'KO':29.52, 'TD':15.68, 'Lewica':11.25, 'Konfederacja':6.37}},
+    {seats: 15, results: {'PiS':45.48, 'KO':20.32, 'TD':15.87, 'Lewica':5.72, 'Konfederacja':8.38}},
+    {seats: 12, results: {'PiS':50.75, 'KO':17.4, 'TD':13.04, 'Lewica':5.62, 'Konfederacja':7.79}},
+    {seats: 12, results: {'PiS':27.76, 'KO':37.73, 'TD':15.07, 'Lewica':9.27, 'Konfederacja':6.51}},
+    {seats: 10, results: {'PiS':26.82, 'KO':41.07, 'TD':11.89, 'Lewica':12.22, 'Konfederacja':5.57}},
+    {seats: 9, results: {'PiS':46.6, 'KO':21.69, 'TD':13.73, 'Lewica':6.39, 'Konfederacja':7.62}},
+    {seats: 12, results: {'PiS':41.46, 'KO':25.89, 'TD':14.5, 'Lewica':7.73, 'Konfederacja':6.82}},
+    {seats: 8, results: {'PiS':42.86, 'KO':24.24, 'TD':14.97, 'Lewica':6.04, 'Konfederacja':7.88}},
+    {seats: 14, results: {'PiS':30.68, 'KO':30.73, 'TD':16.86, 'Lewica':11.04, 'Konfederacja':7.71}},
+    {seats: 10, results: {'PiS':53.73, 'KO':16.1, 'TD':11.58, 'Lewica':3.18, 'Konfederacja':8.73}},
+    {seats: 9, results: {'PiS':48.67, 'KO':17.02, 'TD':18.64, 'Lewica':4.0, 'Konfederacja':7.99}},
+    {seats: 10, results: {'PiS':44.11, 'KO':22.4, 'TD':17.07, 'Lewica':6.52, 'Konfederacja':6.52}},
+    {seats: 9, results: {'PiS':48.68, 'KO':20.96, 'TD':13.98, 'Lewica':5.34, 'Konfederacja':7.31}},
+    {seats: 12, results: {'PiS':48.62, 'KO':18.71, 'TD':15.51, 'Lewica':4.85, 'Konfederacja':8.21}},
+    {seats: 20, results: {'PiS':20.14, 'KO':43.23, 'TD':13.25, 'Lewica':13.45, 'Konfederacja':7.24}},
+    {seats: 12, results: {'PiS':31.74, 'KO':35.23, 'TD':15.06, 'Lewica':7.06, 'Konfederacja':7.06}},
+    {seats: 12, results: {'PiS':31.26, 'KO':33.59, 'TD':12.74, 'Lewica':7.24, 'Konfederacja':6.49}},
+    {seats: 11, results: {'PiS':54.7, 'KO':15.85, 'TD':13.79, 'Lewica':4.47, 'Konfederacja':8.62}},
+    {seats: 15, results: {'PiS':51.6, 'KO':17.7, 'TD':12.42, 'Lewica':4.87, 'Konfederacja':9.48}},
+    {seats: 14, results: {'PiS':42.39, 'KO':20.84, 'TD':18.86, 'Lewica':4.84, 'Konfederacja':9.79}},
+    {seats: 12, results: {'PiS':25.2, 'KO':41.7, 'TD':14.7, 'Lewica':9.41, 'Konfederacja':6.23}},
+    {seats: 14, results: {'PiS':29.24, 'KO':37.91, 'TD':13.59, 'Lewica':8.33, 'Konfederacja':7.21}},
+    {seats: 9, results: {'PiS':36.71, 'KO':28.67, 'TD':14.55, 'Lewica':7.77, 'Konfederacja':7.84}},
+    {seats: 7, results: {'PiS':36.35, 'KO':29.11, 'TD':14.72, 'Lewica':9.41, 'Konfederacja':6.56}},
+    {seats: 9, results: {'PiS':30.16, 'KO':36.06, 'TD':13.34, 'Lewica':9.21, 'Konfederacja':6.95}},
+    {seats: 9, results: {'PiS':38.06, 'KO':29.98, 'TD':12.45, 'Lewica':6.84, 'Konfederacja':8.0}},
+    {seats: 12, results: {'PiS':30.88, 'KO':36.79, 'TD':13.27, 'Lewica':8.46, 'Konfederacja':6.7}},
+    {seats: 9, results: {'PiS':29.74, 'KO':30.3, 'TD':9.85, 'Lewica':21.6, 'Konfederacja':5.69}},
+    {seats: 16, results: {'PiS':47.07, 'KO':20.93, 'TD':13.8, 'Lewica':6.83, 'Konfederacja':6.55}},
+    {seats: 8, results: {'PiS':35.2, 'KO':31.87, 'TD':15.4, 'Lewica':8.11, 'Konfederacja':6.54}},
+    {seats: 10, results: {'PiS':32.33, 'KO':33.07, 'TD':16.11, 'Lewica':8.09, 'Konfederacja':6.93}},
+    {seats: 12, results: {'PiS':35.85, 'KO':28.58, 'TD':16.16, 'Lewica':8.52, 'Konfederacja':6.98}},
+    {seats: 9, results: {'PiS':38.69, 'KO':23.99, 'TD':16.63, 'Lewica':9.48, 'Konfederacja':6.97}},
+    {seats: 9, results: {'PiS':29.11, 'KO':34.87, 'TD':17.66, 'Lewica':7.84, 'Konfederacja':6.87}},
+    {seats: 10, results: {'PiS':19.57, 'KO':44.09, 'TD':16.54, 'Lewica':12.31, 'Konfederacja':5.9}},
+    {seats: 8, results: {'PiS':31.36, 'KO':38.69, 'TD':12.35, 'Lewica':8.72, 'Konfederacja':6.02}},
+    {seats: 12, results: {'PiS':28.79, 'KO':40.13, 'TD':12.62, 'Lewica':9.39, 'Konfederacja':5.94}}
+];
+
+let currentScenario = 'osobno';
+let pollAverages = {};
+
+function setScenario(id, btn) {
+    currentScenario = id;
+    document.querySelectorAll('.btn-scenario').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    runSimulation();
+}
+
+// FORMATOWANIE DAT I OBLICZANIE DNI
+function parseDateString(dateString) {
+    let parts = dateString.split('.');
+    return new Date(parts[2], parts[1] - 1, parts[0]);
+}
+
+fetch('sondaze.json')
+    .then(r => r.json())
+    .then(data => {
+        let count = data.length;
+        let sums = {};
+        let dates = [];
+        
+        data.forEach(poll => {
+            let total = 0;
+            if(poll.data) dates.push(parseDateString(poll.data));
+            for(let k in partyConfig) total += parseFloat(poll.wyniki[k] || 0);
+            if(total > 0) {
+                for(let k in partyConfig) sums[k] = (sums[k] || 0) + (parseFloat(poll.wyniki[k] || 0) / total) * 100;
+            }
+        });
+        
+        for(let k in partyConfig) pollAverages[k] = count > 0 ? (sums[k]/count) : 0;
+        
+        // Obliczanie rozstrzału dni
+        let daysText = "najnowszych wyników";
+        if (dates.length > 0) {
+            let minDate = Math.min(...dates);
+            let maxDate = Math.max(...dates);
+            let daysDiff = Math.round((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
+            daysText = `ostatnich ${daysDiff} dni`;
+        }
+        
+        document.getElementById('poll-info').innerText = `Średnia sondażowa z ${daysText} (${count} badań)`;
+        runSimulation();
+    })
+    .catch(err => {
+        document.getElementById('poll-info').innerHTML = `<span style="color: #dc2626;">Błąd wczytywania pliku sondaze.json</span>`;
+    });
+
+function runSimulation() {
+    let scenario = scenarios[currentScenario];
+    let blockMap = scenario.blocks;
+    let retentionMap = scenario.retention || {};
+    let groups = {};
+
+    // 1. Zbieramy surowe poparcie
+    for (let k in partyConfig) {
+        let gid = blockMap[k] || k;
+        if (!groups[gid]) groups[gid] = { rawVotes: 0, consts: [], names: [] };
+        groups[gid].rawVotes += (pollAverages[k] || 0);
+        groups[gid].consts.push({ k: k, v: pollAverages[k] || 0, p: partyConfig[k].parent });
+        groups[gid].names.push(partyConfig[k].name);
+    }
+
+    // 2. Aplikujemy retencję i sprawdzamy próg
+    let finalLists = {};
+    for (let gid in groups) {
+        let g = groups[gid];
+        let ret = retentionMap[gid] !== undefined ? retentionMap[gid] : 1.0;
+        let finalVotes = g.rawVotes * ret;
+        
+        let threshold = g.consts.length > 1 ? 8.0 : 5.0;
+        g.consts.sort((a,b) => b.v - a.v);
+        let leader = partyConfig[g.consts[0].k];
+        
+        finalLists[gid] = {
+            id: gid, name: gid.length > 10 ? gid : leader.name,
+            support: finalVotes, color: leader.color, axis: leader.axis,
+            seats: 0, qualified: finalVotes >= threshold, consts: g.consts,
+            retRate: ret
+        };
+    }
+
+    // 3. Podział D'Hondtem w okręgach
+    districts.forEach(ddata => {
+        let localV = {};
+        for (let gid in finalLists) {
+            let l = finalLists[gid];
+            let hl = 0, hn = 0, cn = 0;
+            l.consts.forEach(c => {
+                cn += c.v;
+                if (c.p) { hl += (ddata.results[c.p] || 0); hn += (baseline[c.p] || 1); }
+                else { hl += c.v; hn += c.v; }
+            });
+            localV[gid] = (hn > 0 ? (hl * (cn / hn)) : 0) * l.retRate;
+        }
+
+        let quot = [];
+        for (let gid in localV) {
+            if (!finalLists[gid].qualified) continue;
+            for (let i = 1; i <= ddata.seats; i++) quot.push({ v: localV[gid] / i, id: gid });
+        }
+        quot.sort((a,b) => b.v - a.v);
+
+        for (let i = 0; i < ddata.seats; i++) {
+            if (quot[i]) finalLists[quot[i].id].seats++;
+        }
+    });
+
+    let resultsArray = Object.values(finalLists).filter(l => l.support > 0);
+    updateUI(resultsArray);
+}
+
+function updateUI(lists) {
+    lists.sort((a,b) => b.seats - a.seats);
+    
+    let html = '';
+    lists.forEach(l => {
+        let isOut = !l.qualified;
+        let rowClass = isOut ? 'row-disabled' : '';
+        let colorBox = isOut ? '#d1d5db' : `rgb(${l.color})`;
+        let subText = isOut ? '<span class="text-muted">Poza podziałem</span>' : '';
+        let progressWidth = l.seats > 0 ? (l.seats / 460) * 100 : 0;
+        
+        html += `
+            <tr class="${rowClass}">
+                <td>
+                    <div class="party-name-wrapper">
+                        <div class="party-logo" style="background-color: ${colorBox};"></div>
+                        <span>${l.name} ${subText}</span>
+                    </div>
+                </td>
+                <td class="col-right">${l.support.toFixed(1)}%</td>
+                <td>
+                    <div class="progress-wrapper">
+                        <span>${l.seats}</span>
+                        <div class="progress-track" style="${isOut ? 'display:none;' : ''}">
+                            <div class="progress-fill" style="width: ${progressWidth}%; background-color: rgb(${l.color});"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`;
+    });
+    document.getElementById('results-table').innerHTML = html;
+
+    let majBox = document.getElementById('majority-status');
+    if(lists.length > 0 && lists[0].seats >= 231) {
+        majBox.innerHTML = `Większość (231): <span style="color: #166534;">TAK (${lists[0].name})</span>`;
+        majBox.style.background = '#f0fdf4';
+        majBox.style.color = '#166534';
+    } else {
+        majBox.innerHTML = `Większość (231): Brak samodzielnej`;
+        majBox.style.background = '#fef2f2';
+        majBox.style.color = '#991b1b';
+    }
+
+    drawParliament(lists);
+}
+
+function drawParliament(lists) {
+    let sorted = [...lists].sort((a,b) => a.axis - b.axis);
+    
+    const svgWidth = 600;  // Zwiększona szerokość SVG
+    const svgHeight = 350; // Zwiększona wysokość SVG
+    const seatsPerRow = [24, 29, 34, 38, 44, 49, 54, 59, 64, 65];
+    let points = [];
+    
+    for (let r = 0; r < 10; r++) {
+        let n = seatsPerRow[r];
+        // Rzędy są teraz bardziej rozsunięte od siebie (mnożnik 20 zamist 16)
+        let radius = 110 + r * 20; 
+        for (let i = 0; i < n; i++) {
+            let angle = Math.PI - (i / (n - 1)) * Math.PI;
+            let x = 300 + radius * Math.cos(angle);
+            let y = 320 - radius * Math.sin(angle);
+            let rot = 90 - (angle * 180 / Math.PI);
+            points.push({ x, y, rot, angle });
+        }
+    }
+    
+    points.sort((a,b) => b.angle - a.angle);
+
+    let svg = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" style="width:100%; height:auto;">`;
+    let idx = 0;
+    
+    sorted.forEach(p => {
+        if (p.seats === 0) return;
+        
+        svg += `<g class="party-group" data-name="${p.name}" data-seats="${p.seats}" data-votes="${p.support.toFixed(1)}">`;
+        for(let i=0; i<p.seats; i++) {
+            if(points[idx]) {
+                let pt = points[idx];
+                // Kafelki (prostokąty) są teraz większe: 8x14 zamiast 7x11
+                svg += `<rect x="${pt.x - 4}" y="${pt.y - 7}" width="8" height="14" fill="rgb(${p.color})" transform="rotate(${pt.rot}, ${pt.x}, ${pt.y})" rx="1.5" />`;
+                idx++;
+            }
+        }
+        svg += `</g>`;
+    });
+    
+    svg += `</svg>`;
+    document.getElementById('parliament-chart').innerHTML = svg;
+    
+    const groups = document.querySelectorAll('.party-group');
+    const tooltip = document.getElementById('tooltip');
+
+    groups.forEach(group => {
+        group.addEventListener('mouseover', (e) => {
+            tooltip.innerHTML = `
+                <div style="font-size: 15px; margin-bottom: 4px;">${group.getAttribute('data-name')}</div>
+                <div style="color: #9ca3af; font-size: 13px; font-weight: 500;">
+                    Mandaty: <span style="color: #fff;">${group.getAttribute('data-seats')}</span> | 
+                    Poparcie: <span style="color: #fff;">${group.getAttribute('data-votes')}%</span>
+                </div>
+            `;
+            tooltip.style.display = 'block';
+            groups.forEach(g => { if(g !== group) g.style.opacity = '0.3'; });
+        });
+
+        group.addEventListener('mousemove', (e) => {
+            tooltip.style.left = (e.pageX + 15) + 'px';
+            tooltip.style.top = (e.pageY + 15) + 'px';
+        });
+
+        group.addEventListener('mouseout', () => {
+            tooltip.style.display = 'none';
+            groups.forEach(g => g.style.opacity = '1');
+        });
+    });
+}
+</script>
+</body>
+</html>
