@@ -576,19 +576,19 @@ function updateUI(lists) {
 function drawParliament(lists) {
     let sorted = [...lists].sort((a,b) => a.axis - b.axis);
     
-    const svgWidth = 600;  // Zwiększona szerokość SVG
-    const svgHeight = 350; // Zwiększona wysokość SVG
+    const svgWidth = 600;  
+    const svgHeight = 400; // Zwiększona wysokość, aby nic nie uciekało
     const seatsPerRow = [24, 29, 34, 38, 44, 49, 54, 59, 64, 65];
     let points = [];
     
     for (let r = 0; r < 10; r++) {
         let n = seatsPerRow[r];
-        // Rzędy są teraz bardziej rozsunięte od siebie (mnożnik 20 zamist 16)
         let radius = 110 + r * 20; 
         for (let i = 0; i < n; i++) {
             let angle = Math.PI - (i / (n - 1)) * Math.PI;
+            // Przesunąłem środek łuku nieco niżej (y=350), żeby zrobić miejsce na górze
             let x = 300 + radius * Math.cos(angle);
-            let y = 320 - radius * Math.sin(angle);
+            let y = 350 - radius * Math.sin(angle);
             let rot = 90 - (angle * 180 / Math.PI);
             points.push({ x, y, rot, angle });
         }
@@ -596,9 +596,14 @@ function drawParliament(lists) {
     
     points.sort((a,b) => b.angle - a.angle);
 
-    let svg = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" style="width:100%; height:auto;">`;
-    let idx = 0;
+    let svg = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" style="width:100%; height:auto; overflow: visible;">`;
     
+    // --- LINIA WIĘKSZOŚCI (Dłuższa i z zapasem miejsca) ---
+    // Zaczyna się na y=20 (zapas od góry), kończy na y=280 (nad napisami)
+    svg += `<line x1="300" y1="20" x2="300" y2="280" stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,5" />`;
+    svg += `<text x="300" y="15" text-anchor="middle" fill="#9ca3af" font-size="12" font-weight="700" font-family="-apple-system, sans-serif">LINIA WIĘKSZOŚCI (231)</text>`;
+
+    let idx = 0;
     sorted.forEach(p => {
         if (p.seats === 0) return;
         
@@ -606,22 +611,21 @@ function drawParliament(lists) {
         for(let i=0; i<p.seats; i++) {
             if(points[idx]) {
                 let pt = points[idx];
-                // Kafelki (prostokąty) są teraz większe: 8x14 zamiast 7x11
-                svg += `<rect x="${pt.x - 4}" y="${pt.y - 7}" width="8" height="14" fill="rgb(${p.color})" transform="rotate(${pt.rot}, ${pt.x}, ${pt.y})" rx="1.5" />`;
+                svg += `<rect x="${pt.x - 5}" y="${pt.y - 9}" width="10" height="18" fill="rgb(${p.color})" transform="rotate(${pt.rot}, ${pt.x}, ${pt.y})" rx="2" />`;
                 idx++;
             }
         }
         svg += `</g>`;
     });
-    svg += `<text x="300" y="275" text-anchor="middle" fill="#6b7280" font-size="16" font-family="-apple-system, sans-serif">Liczba miejsc</text>`;
-    svg += `<text x="300" y="325" text-anchor="middle" fill="#111827" font-size="52" font-weight="800" font-family="-apple-system, sans-serif">460</text>`;
-    svg += `<line x1="300" y1="5" x2="300" y2="260" stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,5" />`;
+
+    // Środkowe duże napisy (przesunięte w dół względem nowego środka)
+    svg += `<text x="300" y="315" text-anchor="middle" fill="#6b7280" font-size="16" font-family="-apple-system, sans-serif">Liczba miejsc</text>`;
+    svg += `<text x="300" y="365" text-anchor="middle" fill="#111827" font-size="52" font-weight="800" font-family="-apple-system, sans-serif">460</text>`;
     
-    // Przesuwamy napis "WIĘKSZOŚĆ" wyżej, żeby nie nachodził na linię
-    svg += `<text x="300" y="0" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="700" font-family="-apple-system, sans-serif">WIĘKSZOŚĆ (231)</text>`;
     svg += `</svg>`;
     document.getElementById('parliament-chart').innerHTML = svg;
     
+    // Obsługa dymków (tooltipów) zostaje bez zmian
     const groups = document.querySelectorAll('.party-group');
     const tooltip = document.getElementById('tooltip');
 
