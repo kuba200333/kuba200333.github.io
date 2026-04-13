@@ -36,7 +36,13 @@
         }
         
         .header h1 { margin: 0 0 8px 0; font-size: 26px; font-weight: 700; }
-        .poll-info { color: #6b7280; font-size: 14px; font-weight: 500; }
+        .poll-info { color: #6b7280; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+        
+        .btn-polls {
+            background: #e5e7eb; color: #374151; border: none; padding: 6px 12px; border-radius: 6px;
+            cursor: pointer; font-size: 12px; font-weight: 600; transition: background 0.2s;
+        }
+        .btn-polls:hover { background: #d1d5db; }
 
         .scenarios {
             display: flex;
@@ -57,12 +63,7 @@
             transition: all 0.2s;
         }
         
-        .btn-scenario.active {
-            background: #1d4ed8;
-            color: #ffffff;
-            border-color: #1d4ed8;
-        }
-        
+        .btn-scenario.active { background: #1d4ed8; color: #ffffff; border-color: #1d4ed8; }
         .btn-scenario:hover:not(.active) { background: #e5e7eb; }
 
         .main-layout {
@@ -71,9 +72,8 @@
             align-items: flex-start;
         }
 
-        /* Sekcja sali (Lewa strona) */
         .chart-section {
-            flex: 0 0 40%; /* Nieco szersza sekcja na wykres */
+            flex: 0 0 40%;
             min-width: 450px;
             position: relative;
             text-align: center;
@@ -92,163 +92,120 @@
         .seat-total span { display: block; font-size: 14px; color: #6b7280; }
         .seat-total strong { display: block; font-size: 40px; font-weight: 800; color: #111827; margin-top: 4px; }
 
-        /* Sekcja tabeli (Prawa strona) */
         .table-section { flex: 1; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th {
-            text-align: left;
-            padding: 12px 8px;
-            color: #4b5563;
-            font-weight: 600;
-            font-size: 13px;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        
-        td {
-            padding: 16px 8px;
-            border-bottom: 1px solid #f3f4f6;
-            vertical-align: middle;
-            font-size: 15px;
-            font-weight: 600;
-        }
-        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 8px; color: #4b5563; font-weight: 600; font-size: 13px; border-bottom: 2px solid #e5e7eb; }
+        td { padding: 16px 8px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; font-size: 15px; font-weight: 600; }
         .col-right { text-align: right; }
         th.col-right { text-align: right; }
 
-        .party-name-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .party-logo {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-        }
+        .party-name-wrapper { display: flex; align-items: center; gap: 12px; }
+        .party-logo { width: 18px; height: 18px; border-radius: 4px; }
         
         .text-muted { color: #9ca3af; font-size: 13px; font-weight: 400; margin-left: 6px; }
         .row-disabled { color: #9ca3af; }
 
-        /* Paski postępu dla mandatów */
-        .progress-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 15px;
-        }
-        
-        .progress-track {
-            width: 120px;
-            height: 10px;
-            background-color: #e5e7eb;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: 5px;
-        }
+        .progress-wrapper { display: flex; align-items: center; justify-content: flex-end; gap: 15px; }
+        .progress-track { width: 120px; height: 10px; background-color: #e5e7eb; border-radius: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 5px; }
 
-        /* Interaktywna sala (SVG) */
-        .party-group {
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
+        .party-group { cursor: pointer; transition: opacity 0.2s; }
 
         #tooltip {
-            position: absolute;
-            display: none;
-            background: #111827;
-            color: #ffffff;
-            padding: 10px 14px;
-            border-radius: 6px;
-            pointer-events: none;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 100;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            position: absolute; display: none; background: #111827; color: #ffffff;
+            padding: 10px 14px; border-radius: 6px; pointer-events: none;
+            font-size: 14px; font-weight: 600; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         
-        #majority-status {
-            font-size: 16px;
-            font-weight: 700;
-            padding: 10px 15px;
-            background: #f0fdf4;
-            color: #166534;
-            border-radius: 6px;
-            display: inline-block;
+        /* Baretki Większości z dymkami */
+        .badges-container {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; max-width: 500px;
         }
+        .badge {
+            padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 700;
+            cursor: help; position: relative; border: 1px solid transparent;
+        }
+        .badge.yes { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+        .badge.no { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+        
+        /* Efekt natywnego dymka dla baretek */
+        .has-tooltip::after {
+            content: attr(data-desc); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: #111827; color: #fff; padding: 8px 12px; border-radius: 4px;
+            font-size: 12px; white-space: nowrap; z-index: 100; margin-bottom: 8px;
+            font-weight: 500; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .has-tooltip:hover::after { opacity: 1; }
 
-        /* Stopka */
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-            font-size: 13px;
-            color: #6b7280;
+        /* Okno Modalne (Źródła Sondaży) */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            z-index: 2000; align-items: center; justify-content: center;
         }
-        .footer a {
-            color: #1d4ed8;
-            text-decoration: none;
-            font-weight: 600;
+        .modal-content {
+            background: white; padding: 25px 35px; border-radius: 12px; width: 90%; max-width: 800px;
+            max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
-        /* ----- RESPONSYWNOŚĆ (TELEFONY) ----- */
+        .modal-close {
+            float: right; cursor: pointer; border: none; background: none;
+            font-size: 28px; font-weight: bold; color: #9ca3af; margin-top: -5px;
+        }
+        .modal-close:hover { color: #111827; }
+        .modal-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 20px; }
+        .modal-table th, .modal-table td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: center; }
+        .modal-table th { background: #f9fafb; font-weight: 600; color: #4b5563; }
+        .modal-table td:first-child { text-align: left; font-weight: 600; }
+
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 13px; color: #6b7280; }
+
         @media (max-width: 900px) {
-            body {
-                padding: 15px;
-            }
-            .container {
-                padding: 20px 15px;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            #majority-status {
-                width: 100%;
-                text-align: center;
-                box-sizing: border-box;
-            }
-            .main-layout {
-                flex-direction: column; /* Ustawia wykres nad tabelą */
-                gap: 30px;
-            }
-            .chart-section {
-                width: 100%;
-                min-width: auto; /* Zdejmuje sztywne 450px */
-            }
-            .table-section {
-                width: 100%;
-                overflow-x: auto; /* Tabela będzie mogła być przesuwana palcem na boki, jeśli zabraknie miejsca */
-            }
-            .progress-track {
-                width: 70px; /* Krótsze paski w tabeli na małym ekranie */
-            }
-            .seat-total strong {
-                font-size: 32px; /* Mniejszy napis "460" na telefonie */
-            }
-            .seat-total {
-                bottom: 10px; /* Obniżenie napisu bardziej do dołu */
-            }
-            .seat-total span {
-                font-size: 11px; /* Zmniejszenie tekstu 'Liczba miejsc' */
-            }
-            .seat-total strong {
-                font-size: 26px; /* Zmniejszenie samej liczby 460 */
-                margin-top: 0;
-            }
-            .chart-section {
-                padding-bottom: 20px; /* Dodatkowy margines pod wykresem */
-            }
+            body { padding: 15px; }
+            .container { padding: 20px 15px; }
+            .header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .badges-container { justify-content: flex-start; }
+            .main-layout { flex-direction: column; gap: 30px; }
+            .chart-section { width: 100%; min-width: auto; }
+            .table-section { width: 100%; overflow-x: auto; }
+            .progress-track { width: 70px; }
+            .seat-total { bottom: 10px; }
+            .seat-total span { font-size: 11px; }
+            .seat-total strong { font-size: 26px; margin-top: 0; }
+            .chart-section { padding-bottom: 20px; }
+            .has-tooltip::after { white-space: normal; width: 200px; text-align: center; } /* Zawijanie dymków na telefonie */
+        }
+    .btn-scenario {
+            padding: 10px 20px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+            transition: all 0.2s;
+            /* Nowe linijki układające obrazki poziomo: */
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-scenario.active { background: #1d4ed8; color: #ffffff; border-color: #1d4ed8; }
+        .btn-scenario:hover:not(.active) { background: #e5e7eb; }
+
+        /* Klasy dla obrazków i plusów */
+        .btn-logo {
+            height: 27px; /* Tu możesz zmienić wielkość obrazka */
+            width: auto;
+            border-radius: 2px;
+        }
+        .plus-sign {
+            color: #9ca3af;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .btn-scenario.active .plus-sign {
+            color: #93c5fd; /* Jaśniejszy plus, żeby był widoczny na niebieskim tle aktywnego przycisku */
         }
     </style>
 </head>
@@ -257,20 +214,70 @@
 <div class="container">
     <div class="header">
         <div>
-            <h1>Symulacja Mandatów</h1>
+            <h1>Symulacja Mandatów do Sejmu</h1>
             <div id="poll-info" class="poll-info">Wczytywanie danych z sondaze.json...</div>
+            <button class="btn-polls" onclick="document.getElementById('polls-modal').style.display='flex'">
+                📊 Zobacz uwzględnione sondaże
+            </button>
         </div>
-        <div id="majority-status">Większość: Obliczanie...</div>
+        <div id="majority-status" class="badges-container"></div>
     </div>
 
     <div class="scenarios" id="scenario-selector">
         <button class="btn-scenario active" onclick="setScenario('osobno', this)">Start osobny</button>
-        <button class="btn-scenario" onclick="setScenario('blok1', this)">KO + Lewica + PSL + Razem + PL2050</button>
-        <button class="btn-scenario" onclick="setScenario('blok2', this)">KO + Lewica + PSL + PL2050</button>
-        <button class="btn-scenario" onclick="setScenario('blok3', this)">KO + PSL</button>
-        <button class="btn-scenario" onclick="setScenario('blok4', this)">KO + Lewica</button>
-        <button class="btn-scenario" onclick="setScenario('blok5', this)">PiS + Konfederacja + Korona</button>
-        <button class="btn-scenario" onclick="setScenario('blok6', this)">Konfederacja + Korona</button>
+        
+        <button class="btn-scenario" onclick="setScenario('blok1', this)">
+            <img src="logos/KO.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/Lewica.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/PSL.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/Razem.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/pl2050.png" class="btn-logo">
+        </button>
+        
+        <button class="btn-scenario" onclick="setScenario('blok2', this)">
+            <img src="logos/KO.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/Lewica.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/PSL.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/pl2050.png" class="btn-logo">
+        </button>
+        
+        <button class="btn-scenario" onclick="setScenario('blok3', this)">
+            <img src="logos/KO.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/PSL.png" class="btn-logo">
+        </button>
+        
+        <button class="btn-scenario" onclick="setScenario('blok4', this)">
+            <img src="logos/KO.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/Lewica.png" class="btn-logo">
+        </button>
+        
+        <button class="btn-scenario" onclick="setScenario('blok5', this)">
+            <img src="logos/PiS.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/Konfederacja.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/braun.png" class="btn-logo">
+        </button>
+        
+        <button class="btn-scenario" onclick="setScenario('blok6', this)">
+            <img src="logos/Konfederacja.png" class="btn-logo"> <span class="plus-sign">+</span>
+            <img src="logos/braun.png" class="btn-logo">
+        </button>
+        
+        <button class="btn-scenario" onclick="setScenario('blok7', this)">
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <img src="logos/KO.png" class="btn-logo">
+                <img src="logos/Lewica.png" class="btn-logo">
+                <img src="logos/PSL.png" class="btn-logo">
+                <img src="logos/pl2050.png" class="btn-logo">
+            </div>
+            
+            <span style="margin: 0 10px; color: #9ca3af; font-size: 11px;">VS</span>
+            
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <img src="logos/PiS.png" class="btn-logo">
+                <img src="logos/Konfederacja.png" class="btn-logo">
+                <img src="logos/braun.png" class="btn-logo">
+            </div>
+        </button>
     </div>
 
     <div class="main-layout">
@@ -298,6 +305,19 @@
 <div class="footer">
     Metodologia: Przeliczenie poparcia w 41 okręgach wyborczych na mandaty (metoda D'Hondta) w oparciu o dystrybucję terytorialną z wyborów do Sejmu 2023 r.<br>
     Autor i symulacja: <strong>@kuba200333</strong>
+</div>
+
+<div id="polls-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="document.getElementById('polls-modal').style.display='none'">&times;</button>
+        <h2 style="margin-top: 0; color: #111827;">Źródła Sondaży</h2>
+        <p style="color: #6b7280; font-size: 14px; margin-top: -10px;">Z tych badań wyliczono średnią do symulacji.</p>
+        
+        <table class="modal-table">
+            <thead id="modal-table-head"></thead>
+            <tbody id="modal-table-body"></tbody>
+        </table>
+    </div>
 </div>
 
 <div id="tooltip"></div>
@@ -328,9 +348,7 @@ const scenarios = {
             'PL2050': 'KO + Lew + PSL + Raz + PL2050',
             'Centrum': 'KO + Lew + PSL + Raz + PL2050'
         },
-        retention: {
-            'KO + Lew + PSL + Raz + PL2050': 0.93
-        }
+        retention: { 'KO + Lew + PSL + Raz + PL2050': 0.93 }
     },
     
     'blok2': { 
@@ -341,9 +359,7 @@ const scenarios = {
             'PL2050': 'KO + Lew + PSL + PL2050',
             'Centrum': 'KO + Lew + PSL + PL2050'
         },
-        retention: {
-            'KO + Lew + PSL + PL2050': 0.95
-        }
+        retention: { 'KO + Lew + PSL + PL2050': 0.95 }
     },
     
     'blok3': { 
@@ -364,6 +380,25 @@ const scenarios = {
     'blok6': { 
         blocks: { 'Kon': 'Konf + KKP', 'Bra': 'Konf + KKP' },
         retention: { 'Konf + KKP': 1.0 }
+    },
+    'blok7': { 
+        blocks: { 
+            // Blok pierwszy
+            'KO': 'Koalicja 15.X', 
+            'Lew': 'Koalicja 15.X', 
+            'PSL': 'Koalicja 15.X', 
+            'PL2050': 'Koalicja 15.X',
+            'Centrum': 'Koalicja 15.X',
+            // Blok drugi
+            'PiS': 'Prawica', 
+            'Kon': 'Prawica', 
+            'Bra': 'Prawica' 
+        },
+        retention: { 
+            // Utrzymanie poparcia z poprzednich wariantów
+            'Koalicja 15.X': 0.95, 
+            'Prawica': 0.92 
+        }
     }
 };
 
@@ -423,7 +458,6 @@ function setScenario(id, btn) {
     runSimulation();
 }
 
-// FORMATOWANIE DAT I OBLICZANIE DNI
 function parseDateString(dateString) {
     let parts = dateString.split('.');
     return new Date(parts[2], parts[1] - 1, parts[0]);
@@ -434,11 +468,18 @@ fetch('sondaze.json')
     .then(data => {
         let count = data.length;
         let sums = {};
-        let dates = [];
         
+        let minDate = new Date(8640000000000000);
+        let maxDate = new Date(-8640000000000000);
+        
+        // Zbieranie i uśrednianie danych
         data.forEach(poll => {
             let total = 0;
-            if(poll.data) dates.push(parseDateString(poll.data));
+            if(poll.data) {
+                let d = parseDateString(poll.data);
+                if (d < minDate) minDate = d;
+                if (d > maxDate) maxDate = d;
+            }
             for(let k in partyConfig) total += parseFloat(poll.wyniki[k] || 0);
             if(total > 0) {
                 for(let k in partyConfig) sums[k] = (sums[k] || 0) + (parseFloat(poll.wyniki[k] || 0) / total) * 100;
@@ -447,16 +488,30 @@ fetch('sondaze.json')
         
         for(let k in partyConfig) pollAverages[k] = count > 0 ? (sums[k]/count) : 0;
         
-        // Obliczanie rozstrzału dni
-        let daysText = "najnowszych wyników";
-        if (dates.length > 0) {
-            let minDate = Math.min(...dates);
-            let maxDate = Math.max(...dates);
-            let daysDiff = Math.round((maxDate - minDate) / (1000 * 60 * 60 * 24)) + 1;
-            daysText = `ostatnich ${daysDiff} dni`;
+        // Wypisywanie pięknej daty
+        let dateText = "";
+        if (minDate <= maxDate) {
+            const fmt = d => d.toLocaleDateString('pl-PL', {day: '2-digit', month: '2-digit', year: 'numeric'});
+            dateText = `(od ${fmt(minDate)} do ${fmt(maxDate)})`;
         }
+        document.getElementById('poll-info').innerText = `Średnia sondażowa ${dateText} – baza ${count} badań.`;
         
-        document.getElementById('poll-info').innerText = `Średnia sondażowa z ${daysText} (${count} badań)`;
+        // GENEROWANIE TABELI MODALA
+        let th = '<tr><th>Data</th><th>Sondażownia</th>';
+        // Tutaj zmieniamy, żeby brał klucz 'k' (czyli KO, PiS, Kon), a nie ucięte pierwsze słowo
+        for(let k in partyConfig) th += `<th>${k}</th>`; 
+        th += '</tr>';
+        document.getElementById('modal-table-head').innerHTML = th;
+
+        let tb = '';
+        data.forEach(poll => {
+            // Dodajemy poll.sondazownia, bo tak masz to wpisane w swoim JSON-ie
+            tb += `<tr><td>${poll.data || '-'}</td><td>${poll.sondazownia || 'Nieznana'}</td>`;
+            for(let k in partyConfig) tb += `<td>${poll.wyniki[k] ? poll.wyniki[k]+'%' : '-'}</td>`;
+            tb += '</tr>';
+        });
+        document.getElementById('modal-table-body').innerHTML = tb;
+
         runSimulation();
     })
     .catch(err => {
@@ -469,7 +524,6 @@ function runSimulation() {
     let retentionMap = scenario.retention || {};
     let groups = {};
 
-    // 1. Zbieramy surowe poparcie
     for (let k in partyConfig) {
         let gid = blockMap[k] || k;
         if (!groups[gid]) groups[gid] = { rawVotes: 0, consts: [], names: [] };
@@ -478,7 +532,6 @@ function runSimulation() {
         groups[gid].names.push(partyConfig[k].name);
     }
 
-    // 2. Aplikujemy retencję i sprawdzamy próg
     let finalLists = {};
     for (let gid in groups) {
         let g = groups[gid];
@@ -497,7 +550,6 @@ function runSimulation() {
         };
     }
 
-    // 3. Podział D'Hondtem w okręgach
     districts.forEach(ddata => {
         let localV = {};
         for (let gid in finalLists) {
@@ -559,16 +611,25 @@ function updateUI(lists) {
     });
     document.getElementById('results-table').innerHTML = html;
 
-    let majBox = document.getElementById('majority-status');
-    if(lists.length > 0 && lists[0].seats >= 231) {
-        majBox.innerHTML = `Większość (231): <span style="color: #166534;">TAK (${lists[0].name})</span>`;
-        majBox.style.background = '#f0fdf4';
-        majBox.style.color = '#166534';
-    } else {
-        majBox.innerHTML = `Większość (231): Brak samodzielnej`;
-        majBox.style.background = '#fef2f2';
-        majBox.style.color = '#991b1b';
-    }
+    // --- WYŚWIETLANIE STATUSÓW WIĘKSZOŚCI ---
+    let leaderSeats = lists.length > 0 ? lists[0].seats : 0;
+    
+    let m231 = leaderSeats >= 231;
+    let m276 = leaderSeats >= 276;
+    let m307 = leaderSeats >= 307;
+
+    let badgesHtml = `
+        <div class="badge has-tooltip ${m231 ? 'yes' : 'no'}" data-desc="Wystarcza do uchwalania ustaw i wotum zaufania dla rządu.">
+            Większość bezwzględna (231): ${m231 ? 'TAK' : 'BRAK'}
+        </div>
+        <div class="badge has-tooltip ${m276 ? 'yes' : 'no'}" data-desc="Większość 3/5 – pozwala na odrzucenie weta Prezydenta RP.">
+            Odrzucenie weta (276): ${m276 ? 'TAK' : 'BRAK'}
+        </div>
+        <div class="badge has-tooltip ${m307 ? 'yes' : 'no'}" data-desc="Większość 2/3 – pozwala na zmianę Konstytucji lub Trybunał Stanu dla Prezydenta.">
+            Większość Konstytucyjna (307): ${m307 ? 'TAK' : 'BRAK'}
+        </div>
+    `;
+    document.getElementById('majority-status').innerHTML = badgesHtml;
 
     drawParliament(lists);
 }
@@ -577,7 +638,7 @@ function drawParliament(lists) {
     let sorted = [...lists].sort((a,b) => a.axis - b.axis);
     
     const svgWidth = 600;  
-    const svgHeight = 400; // Zwiększona wysokość, aby nic nie uciekało
+    const svgHeight = 400;
     const seatsPerRow = [24, 29, 34, 38, 44, 49, 54, 59, 64, 65];
     let points = [];
     
@@ -586,7 +647,6 @@ function drawParliament(lists) {
         let radius = 110 + r * 20; 
         for (let i = 0; i < n; i++) {
             let angle = Math.PI - (i / (n - 1)) * Math.PI;
-            // Przesunąłem środek łuku nieco niżej (y=350), żeby zrobić miejsce na górze
             let x = 300 + radius * Math.cos(angle);
             let y = 350 - radius * Math.sin(angle);
             let rot = 90 - (angle * 180 / Math.PI);
@@ -598,8 +658,6 @@ function drawParliament(lists) {
 
     let svg = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" style="width:100%; height:auto; overflow: visible;">`;
     
-    // --- LINIA WIĘKSZOŚCI (Dłuższa i z zapasem miejsca) ---
-    // Zaczyna się na y=20 (zapas od góry), kończy na y=280 (nad napisami)
     svg += `<line x1="300" y1="20" x2="300" y2="280" stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,5" />`;
     svg += `<text x="300" y="15" text-anchor="middle" fill="#9ca3af" font-size="12" font-weight="700" font-family="-apple-system, sans-serif">LINIA WIĘKSZOŚCI (231)</text>`;
 
@@ -618,14 +676,12 @@ function drawParliament(lists) {
         svg += `</g>`;
     });
 
-    // Środkowe duże napisy (przesunięte w dół względem nowego środka)
     svg += `<text x="300" y="315" text-anchor="middle" fill="#6b7280" font-size="16" font-family="-apple-system, sans-serif">Liczba miejsc</text>`;
     svg += `<text x="300" y="365" text-anchor="middle" fill="#111827" font-size="52" font-weight="800" font-family="-apple-system, sans-serif">460</text>`;
     
     svg += `</svg>`;
     document.getElementById('parliament-chart').innerHTML = svg;
     
-    // Obsługa dymków (tooltipów) zostaje bez zmian
     const groups = document.querySelectorAll('.party-group');
     const tooltip = document.getElementById('tooltip');
 
