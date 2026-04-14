@@ -1,7 +1,7 @@
 [
     {
         "data": "14.04.2026",
-        "sondazownia": "IBRiS dla Polsat News",
+        "sondazownia": "IBRiS dla Polsat News, zdecydowani",
         "wyniki": {
             "KO": "33.9",
             "PiS": "25.1",
@@ -17,7 +17,7 @@
     },
     {
         "data": "09.04.2026",
-        "sondazownia": "Opinia24",
+        "sondazownia": "Opinia24, zdecydowani",
         "wyniki": {
             "KO": "37.5",
             "PiS": "23.5",
@@ -33,7 +33,7 @@
     },
     {
         "data": "10.04.2026",
-        "sondazownia": "Pollster",
+        "sondazownia": "Pollster, zdecydowani",
         "wyniki": {
             "KO": "35.8",
             "PiS": "27.3",
@@ -49,7 +49,7 @@
     },
     {
         "data": "04.04.2026",
-        "sondazownia": "OGB_PL",
+        "sondazownia": "OGB_PL, zdecydowani",
         "wyniki": {
             "KO": "38",
             "PiS": "29.8",
@@ -65,7 +65,7 @@
     },
     {
         "data": "01.04.2026",
-        "sondazownia": "united_surveys  ",
+        "sondazownia": "United Surveys, zdecydowani",
         "wyniki": {
             "KO": "33.5",
             "PiS": "25",
