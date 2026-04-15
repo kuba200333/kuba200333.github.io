@@ -1,11 +1,27 @@
 [
     {
+        "data": "15.04.2026",
+        "sondazownia": "United Surveys dla wirtualnapolska, zdecydowani",
+        "wyniki": {
+            "KO": "32.3",
+            "PiS": "25.1",
+            "Kon": "15.1",
+            "Bra": "8.9",
+            "Lew": "8.5",
+            "Raz": "4.5",
+            "PSL": "3.9",
+            "PL2050": "1.7",
+            "Centrum": "0",
+            "Inna": "0"
+        }
+    },
+    {
         "data": "14.04.2026",
         "sondazownia": "IBRiS dla Polsat News, zdecydowani",
         "wyniki": {
             "KO": "33.9",
             "PiS": "25.1",
-            "Kon": "15,5",
+            "Kon": "15.8",
             "Bra": "8.7",
             "Lew": "7.5",
             "Raz": "3.3",
