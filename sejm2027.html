@@ -231,7 +231,8 @@
         <button class="btn-scenario" onclick="setScenario('blok5', this)">
             <img src="logos/PiS.png" class="btn-logo"> <span class="plus-sign">+</span>
             <img src="logos/Konfederacja.png" class="btn-logo"> <span class="plus-sign">+</span>
-            <img src="logos/braun.png" class="btn-logo">
+            <img src="logos/braun.png" class="btn-logo"><span class="plus-sign">+</span>
+            <img src="logos/Rozwój_Plus.jpg" class="btn-logo">
         </button>
         
         <button class="btn-scenario" onclick="setScenario('blok6', this)">
@@ -251,6 +252,7 @@
                 <img src="logos/PiS.png" class="btn-logo">
                 <img src="logos/Konfederacja.png" class="btn-logo">
                 <img src="logos/braun.png" class="btn-logo">
+                <img src="logos/Rozwój_Plus.jpg" class="btn-logo">
             </div>
         </button>
     </div>
@@ -325,7 +327,7 @@ const partyConfig = {
     'PSL': { name: 'PSL', color: '27, 177, 0', axis: 3, parent: 'TD' },
     'Raz': { name: 'Razem', color: '135, 15, 87', axis: 1, parent: 'Lewica' },
     'PL2050': { name: 'PL2050', color: '240, 232, 0', axis: 3, parent: 'TD' },
-    'Centrum': { name: 'Centrum', color: '0, 160, 150', axis: 3, parent: 'TD' }
+    'Rozwój Plus': { name: 'Rozwój Plus', color: '0, 160, 150', axis: 3, parent: 'PiS' }
 };
 
 const scenarios = {
@@ -337,8 +339,7 @@ const scenarios = {
             'Lew': 'KO + Lewica + PSL + Razem + PL2050', 
             'PSL': 'KO + Lewica + PSL + Razem + PL2050', 
             'Raz': 'KO + Lewica + PSL + Razem + PL2050', 
-            'PL2050': 'KO + Lewica + PSL + Razem + PL2050', 
-            'Centrum': 'KO + Lewica + PSL + Razem + PL2050' 
+            'PL2050': 'KO + Lewica + PSL + Razem + PL2050' 
         },
         retention: { 'KO + Lewica + PSL + Razem + PL2050': 0.93 }
     },
@@ -348,8 +349,7 @@ const scenarios = {
             'KO': 'KO + Lewica + PSL + PL2050', 
             'Lew': 'KO + Lewica + PSL + PL2050', 
             'PSL': 'KO + Lewica + PSL + PL2050', 
-            'PL2050': 'KO + Lewica + PSL + PL2050', 
-            'Centrum': 'KO + Lewica + PSL + PL2050' 
+            'PL2050': 'KO + Lewica + PSL + PL2050' 
         },
         retention: { 'KO + Lewica + PSL + PL2050': 0.95 }
     },
@@ -365,8 +365,8 @@ const scenarios = {
     },
     
     'blok5': { 
-        blocks: { 'PiS': 'PiS + Konfederacja + KKP', 'Kon': 'PiS + Konfederacja + KKP', 'Bra': 'PiS + Konfederacja + KKP' }, 
-        retention: { 'PiS + Konfederacja + KKP': 0.92 } 
+        blocks: { 'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica', 'Rozwój Plus': 'Prawica' }, 
+        retention: { 'Prawica': 0.92 } 
     },
     
     'blok6': { 
@@ -380,14 +380,14 @@ const scenarios = {
             'Lew': 'Koalicja 15 Października', 
             'PSL': 'Koalicja 15 Października', 
             'PL2050': 'Koalicja 15 Października', 
-            'Centrum': 'Koalicja 15 Października', 
-            'PiS': 'PiS + Konfederacja + KKP', 
-            'Kon': 'PiS + Konfederacja + KKP', 
-            'Bra': 'PiS + Konfederacja + KKP' 
+            'PiS': 'Zjednoczona Prawica', 
+            'Rozwój Plus': 'Zjednoczona Prawica', 
+            'Kon': 'Zjednoczona Prawica', 
+            'Bra': 'Zjednoczona Prawica' 
         },
         retention: { 
             'Koalicja 15 Października': 0.95, 
-            'PiS + Konfederacja + KKP': 0.92 
+            'Zjednoczona Prawica': 0.92 
         }
     }
 };
@@ -449,36 +449,62 @@ function parseDateString(dateString) {
     return new Date(parts[2], parts[1] - 1, parts[0]);
 }
 
-// INICJALIZACJA
+// INICJALIZACJA Z INTELIGENTNĄ ŚREDNIĄ
 fetch('sondaze.json')
     .then(r => r.json())
     .then(data => {
-        let count = data.length;
-        let sums = {};
+        let partySums = {};
+        let partyCounts = {};
+        for(let k in partyConfig) { partySums[k] = 0; partyCounts[k] = 0; }
+        
         let minDate = new Date(8640000000000000);
         let maxDate = new Date(-8640000000000000);
         
         data.forEach(poll => {
-            let total = 0;
             if(poll.data) {
                 let d = parseDateString(poll.data);
                 if (d < minDate) minDate = d;
                 if (d > maxDate) maxDate = d;
             }
-            for(let k in partyConfig) total += parseFloat(poll.wyniki[k] || 0);
-            if(total > 0) {
-                for(let k in partyConfig) sums[k] = (sums[k] || 0) + (parseFloat(poll.wyniki[k] || 0) / total) * 100;
+            
+            let pollTotal = 0;
+            // Krok 1: Sumujemy poparcie tylko dla zdefiniowanych partii w danym sondażu
+            for(let k in partyConfig) {
+                if(poll.wyniki[k] !== undefined && poll.wyniki[k] !== "") {
+                    pollTotal += parseFloat(poll.wyniki[k] || 0);
+                }
+            }
+            
+            // Krok 2: Jeśli sondaż jest ważny, zapisujemy wyniki
+            if(pollTotal > 0) {
+                for(let k in partyConfig) {
+                    if(poll.wyniki[k] !== undefined && poll.wyniki[k] !== "") {
+                        partySums[k] += (parseFloat(poll.wyniki[k] || 0) / pollTotal) * 100;
+                        partyCounts[k]++; // Liczymy sondaż tylko dla partii w nim obecnych!
+                    }
+                }
             }
         });
         
-        for(let k in partyConfig) pollAverages[k] = count > 0 ? (sums[k]/count) : 0;
+        // Krok 3: Wyliczamy surowe średnie (Morawiecki dzieli się przez 1, a Tusk przez 8)
+        let rawAverages = {};
+        let totalRaw = 0;
+        for(let k in partyConfig) {
+            rawAverages[k] = partyCounts[k] > 0 ? (partySums[k] / partyCounts[k]) : 0;
+            totalRaw += rawAverages[k];
+        }
+        
+        // Krok 4: Normalizacja - ściskamy z powrotem do 100%
+        for(let k in partyConfig) {
+            pollAverages[k] = totalRaw > 0 ? parseFloat(((rawAverages[k] / totalRaw) * 100).toFixed(2)) : 0;
+        }
         
         let dateText = "";
         if (minDate <= maxDate) {
             const fmt = d => d.toLocaleDateString('pl-PL', {day: '2-digit', month: '2-digit', year: 'numeric'});
             dateText = `(od ${fmt(minDate)} do ${fmt(maxDate)})`;
         }
-        document.getElementById('poll-info').innerText = `Średnia sondażowa ${dateText} – baza ${count} badań.`;
+        document.getElementById('poll-info').innerText = `Średnia sondażowa znormalizowana ${dateText} – baza ${data.length} badań.`;
         
         let th = '<tr><th>Data</th><th>Sondażownia</th>';
         for(let k in partyConfig) th += `<th>${k}</th>`; 
@@ -488,7 +514,9 @@ fetch('sondaze.json')
         let tb = '';
         data.forEach(poll => {
             tb += `<tr><td>${poll.data || '-'}</td><td>${poll.sondazownia || 'Nieznana'}</td>`;
-            for(let k in partyConfig) tb += `<td>${poll.wyniki[k] ? poll.wyniki[k]+'%' : '-'}</td>`;
+            for(let k in partyConfig) {
+                tb += `<td>${poll.wyniki[k] !== undefined && poll.wyniki[k] !== "" ? poll.wyniki[k]+'%' : '-'}</td>`;
+            }
             tb += '</tr>';
         });
         document.getElementById('modal-table-body').innerHTML = tb;
