@@ -1,5 +1,21 @@
 [
     {
+    "data": "19.04.2026",
+    "sondazownia": "United Surveys by IBRiS dla Wirtualnej Polski, zdecydowani",
+    "wyniki": {
+        "KO": "34.2",
+        "PiS": "21.6",
+        "Kon": "14.1",
+        "Bra": "9.1",
+        "Lew": "8.3",
+        "Raz": "3.4",
+        "PSL": "3.3",
+        "PL2050": "0.5",
+        "Rozwój Plus": "5.4",
+        "Inna": "0"
+        }
+    },
+    {
         "data": "15.04.2026",
         "sondazownia": "CBOS ",
         "wyniki": {
@@ -11,7 +27,7 @@
             "Raz": "5.8",
             "PSL": "3.7",
             "PL2050": "1.5",
-            "Centrum": "0",
+            "Rozwój Plus": "0",
             "Inna": "0"
         }
     },
@@ -27,7 +43,7 @@
             "Raz": "4.5",
             "PSL": "3.9",
             "PL2050": "1.7",
-            "Centrum": "0",
+            "Rozwój Plus": "0",
             "Inna": "0"
         }
     },
@@ -43,7 +59,7 @@
             "Raz": "3.3",
             "PSL": "4.4",
             "PL2050": "1.3",
-            "Centrum": "0",
+            "Rozwój Plus": "0",
             "Inna": "0"
         }
     },
@@ -59,7 +75,7 @@
             "Raz": "4.9",
             "PSL": "2",
             "PL2050": "3.3",
-            "Centrum": "0",
+            "Rozwój Plus": "0",
             "Inna": "0"
         }
     },
@@ -75,7 +91,7 @@
             "Raz": "4.7",
             "PSL": "3.9",
             "PL2050": "1.8",
-            "Centrum": "0",
+            "Rozwój Plus": "0",
             "Inna": "0"
         }
     },
@@ -91,7 +107,7 @@
             "Raz": "3.2",
             "PSL": "1.6",
             "PL2050": "1",
-            "Centrum": "0",
+            "Rozwój Plus": "0",
             "Inna": "0"
         }
     },
@@ -107,7 +123,7 @@
             "Raz": "3.8",
             "PSL": "5.5",
             "PL2050": "2",
-            "Centrum": "0",
+            "Rozwój Plus": "0",
             "Inna": "0"
         }
     }
