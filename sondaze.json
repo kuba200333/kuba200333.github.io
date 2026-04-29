@@ -1,5 +1,37 @@
 [
     {
+        "data": "29.04.2026",
+        "sondazownia": "IBRiS dla Rz, zdecydowani",
+        "wyniki": {
+            "KO": "34.5",
+            "PiS": "25.0",
+            "Kon": "12.9",
+            "Bra": "8.5",
+            "Lew": "9.4",
+            "Raz": "4.3",
+            "PSL": "4.7",
+            "PL2050": "0.5",
+            "Rozwój Plus": "",
+            "Inna": ""
+        }
+    },
+    {
+        "data": "27.04.2026",
+        "sondazownia": "OGB",
+        "wyniki": {
+            "KO": "37.6",
+            "PiS": "29.4",
+            "Kon": "13.2",
+            "Bra": "8.3",
+            "Lew": "4.6",
+            "Raz": "3.4",
+            "PSL": "1.7",
+            "PL2050": "1.7",
+            "Rozwój Plus": "0",
+            "Inna": "0"
+        }
+    },
+    {
         "data": "28.04.2026",
         "sondazownia": "Social Changes dla Interii, zdecydowani",
         "wyniki": {
