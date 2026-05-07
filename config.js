@@ -1,13 +1,13 @@
 // config.js - Główna baza danych dla symulacji JS
 
 const partyConfig = {
-    'KO': { name: 'Koalicja Obywatelska', color: '227, 125, 0', axis: 2, parent: 'KO', logo: 'logos/ko.png' },
-    'PiS': { name: 'Prawo i Sprawiedliwość', color: '38, 52, 140', axis: 6, parent: 'PiS', logo: 'logos/pis.png' },
-    'Kon': { name: 'Konfederacja', color: '18, 47, 71', axis: 4, parent: 'Konfederacja', logo: 'logos/konfederacja.png' },
+    'KO': { name: 'Koalicja Obywatelska', color: '227, 125, 0', axis: 2, parent: 'KO', logo: 'logos/KO.png' },
+    'PiS': { name: 'Prawo i Sprawiedliwość', color: '38, 52, 140', axis: 6, parent: 'PiS', logo: 'logos/PiS.png' },
+    'Kon': { name: 'Konfederacja', color: '18, 47, 71', axis: 4, parent: 'Konfederacja', logo: 'logos/Konfederacja.png' },
     'Bra': { name: 'Konfederacja Korony Polskiej', color: '92, 60, 24', axis: 5, parent: 'Konfederacja', logo: 'logos/braun.png' },
-    'Lew': { name: 'Nowa Lewica', color: '200, 16, 46', axis: 1, parent: 'Lewica', logo: 'logos/lewica.png' },
-    'PSL': { name: 'PSL', color: '27, 177, 0', axis: 3, parent: 'TD', logo: 'logos/psl.png' },
-    'Raz': { name: 'Razem', color: '135, 15, 87', axis: 1, parent: 'Lewica', logo: 'logos/razem.png' },
+    'Lew': { name: 'Nowa Lewica', color: '200, 16, 46', axis: 1, parent: 'Lewica', logo: 'logos/Lewica.png' },
+    'PSL': { name: 'PSL', color: '27, 177, 0', axis: 3, parent: 'TD', logo: 'logos/PSL.png' },
+    'Raz': { name: 'Razem', color: '135, 15, 87', axis: 1, parent: 'Lewica', logo: 'logos/Razem.png' },
     'PL2050': { name: 'Polska 2050', color: '240, 232, 0', axis: 3, parent: 'TD', logo: 'logos/pl2050.png' },
     //'Rozwój Plus': { name: 'Rozwój Plus', color: '0, 160, 150', axis: 3, parent: 'PiS', logo: 'logos/Rozwój_Plus.jpg' },
     'Inna': { name: 'Bezpartyjni / Inni', color: '153, 153, 153', axis: 4, parent: null, logo: 'logos/inna.png' }
