@@ -298,8 +298,12 @@ function runSimulation() {
         g.consts.sort((a,b) => b.v - a.v);
         let leader = partyConfig[g.consts[0].k];
         
+        // Zbieramy nazwy wszystkich partii w bloku (od największej do najmniejszej) i łączymy plusem
+        let combinedNames = g.consts.map(c => partyConfig[c.k].name).join(' + ');
+        
         finalLists[gid] = {
-            id: gid, name: gid.length > 10 ? gid : leader.name,
+            id: gid, 
+            name: g.consts.length > 1 ? combinedNames : leader.name,
             support: finalVotes, color: leader.color, axis: leader.axis,
             seats: 0, qualified: finalVotes >= threshold, consts: g.consts,
             retRate: ret
