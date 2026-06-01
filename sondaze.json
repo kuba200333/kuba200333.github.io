@@ -1,5 +1,69 @@
 [
     {
+        "data": "01.06.2026",
+        "sondazownia": "Pollster dla Super Express`",
+        "wyniki": {
+            "KO": "33",
+            "PiS": "26.7",
+            "Kon": "13.3",
+            "Bra": "7",
+            "Lew": "7.8",
+            "Raz": "4.8",
+            "PSL": "4.3",
+            "PL2050": "2.7",
+            "Rozwój Plus": "",
+            "Inna": ""
+        }
+    },
+    {
+        "data": "23.05.2026",
+        "sondazownia": "OGB",
+        "wyniki": {
+            "KO": "38.9",
+            "PiS": "27",
+            "Kon": "11.8",
+            "Bra": "9.3",
+            "Lew": "5.2",
+            "Raz": "3.5",
+            "PSL": "2.4",
+            "PL2050": "1.9",
+            "Rozwój Plus": "",
+            "Inna": ""
+        }
+    },
+    {
+        "data": "24.05.2026",
+        "sondazownia": "United Surveys dla WP",
+        "wyniki": {
+            "KO": "32.2",
+            "PiS": "25.2",
+            "Kon": "14.9",
+            "Bra": "9",
+            "Lew": "8.9",
+            "Raz": "3.6",
+            "PSL": "4.5",
+            "PL2050": "1.7",
+            "Rozwój Plus": "",
+            "Inna": ""
+        }
+    },
+    {
+        "data": "26.05.2026",
+        "sondazownia": "IBRiS dla RP",
+        "wyniki": {
+            "KO": "32.6",
+            "PiS": "26.5",
+            "Kon": "13.3",
+            "Bra": "9.3",
+            "Lew": "8.9",
+            "Raz": "3",
+            "PSL": "4.1",
+            "PL2050": "2.2",
+            "Rozwój Plus": "",
+            "Inna": ""
+        }
+    },
+    {
         "data": "11.05.2026",
         "sondazownia": "Pollster dla Super Express",
         "wyniki": {
@@ -45,54 +109,6 @@
             "PL2050": "1.6",
             "Rozwój Plus": "",
             "Inna": ""
-        }
-    },
-    {
-        "data": "29.04.2026",
-        "sondazownia": "IBRiS dla Rz, zdecydowani",
-        "wyniki": {
-            "KO": "34.5",
-            "PiS": "25.0",
-            "Kon": "12.9",
-            "Bra": "8.5",
-            "Lew": "9.4",
-            "Raz": "4.3",
-            "PSL": "4.7",
-            "PL2050": "0.5",
-            "Rozwój Plus": "",
-            "Inna": ""
-        }
-    },
-    {
-        "data": "27.04.2026",
-        "sondazownia": "OGB",
-        "wyniki": {
-            "KO": "37.6",
-            "PiS": "29.4",
-            "Kon": "13.2",
-            "Bra": "8.3",
-            "Lew": "4.6",
-            "Raz": "3.4",
-            "PSL": "1.7",
-            "PL2050": "1.7",
-            "Rozwój Plus": "",
-            "Inna": ""
-        }
-    },
-    {
-        "data": "28.04.2026",
-        "sondazownia": "Social Changes dla Interii, zdecydowani",
-        "wyniki": {
-            "KO": "33.0",
-            "PiS": "28.0",
-            "Kon": "12.0",
-            "Bra": "9.0",
-            "Lew": "7.0",
-            "Raz": "5.0",
-            "PSL": "2.0",
-            "PL2050": "2.0",
-            "Rozwój Plus": "",
-            "Inna": "2.0"
         }
     }
 ]
