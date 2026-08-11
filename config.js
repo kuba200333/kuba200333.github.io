@@ -9,7 +9,7 @@ const partyConfig = {
     'PSL': { name: 'PSL', color: '27, 177, 0', axis: 3, parent: 'TD', logo: 'logos/PSL.png' },
     'Raz': { name: 'Razem', color: '135, 15, 87', axis: 1, parent: 'Lewica', logo: 'logos/Razem.png' },
     'PL2050': { name: 'Polska 2050', color: '240, 232, 0', axis: 3, parent: 'TD', logo: 'logos/pl2050.png' },
-    //'Rozwój Plus': { name: 'Rozwój Plus', color: '0, 160, 150', axis: 3, parent: 'PiS', logo: 'logos/Rozwój_Plus.jpg' },
+    'Rozwój Plus': { name: 'Rozwój Plus', color: '0, 160, 150', axis: 3, parent: 'PiS', logo: 'logos/Rozwój_Plus.jpg' },
     'Inna': { name: 'Bezpartyjni / Inni', color: '153, 153, 153', axis: 4, parent: null, logo: 'logos/inna.png' }
 };
 
@@ -87,9 +87,9 @@ const scenarios = {
         retention: { 'KO+Lew': 0.97 } 
     },
     'blok5': { 
-        name: 'Zjednoczona Prawica (PiS+Konf+Bra)',
-        //blocks: { 'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica', 'Rozwój Plus': 'Prawica' }, 
-        blocks: { 'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica'}, 
+        name: 'Zjednoczona Prawica (PiS+Konf+Bra+RP)',
+        blocks: { 'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica', 'Rozwój Plus': 'Prawica' }, 
+        //blocks: { 'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica'}, 
         retention: { 'Prawica': 0.92 } 
     },
     'blok6': { 
@@ -101,7 +101,7 @@ const scenarios = {
         name: 'Polaryzacja: Koalicja 15X vs Zjednoczona Prawica',
         blocks: { 
             'KO': 'Koalicja 15X', 'Lew': 'Koalicja 15X', 'PSL': 'Koalicja 15X', 'PL2050': 'Koalicja 15X', 
-            'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica' 
+            'PiS': 'Prawica', 'Kon': 'Prawica', 'Bra': 'Prawica', 'Rozwój Plus': 'Prawica'
         },
         retention: { 'Koalicja 15X': 0.95, 'Prawica': 0.92 }
     }
